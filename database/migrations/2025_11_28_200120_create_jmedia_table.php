@@ -18,6 +18,7 @@ return new class extends Migration
         $table->string('mime');
         $table->integer('size')->nullable();
         $table->foreignId('user_id')->nullable()->constrained();
+        $table->timestamps();
         });
     }
 

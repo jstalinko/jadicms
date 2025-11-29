@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('postmetas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('jpost_id');
+            $table->unsignedBigInteger('post_id');
             $table->string('meta_key');
             $table->text('meta_value')->nullable();
             $table->timestamps();

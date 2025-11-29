@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('labelmetas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('jlabel_id');
+            $table->unsignedBigInteger('label_id');
             $table->string('meta_key');
             $table->text('meta_value')->nullable();
             $table->timestamps();

@@ -26,6 +26,8 @@ class MakePlugin extends Command
         File::makeDirectory("$basePath/Models", 0755, true);
         File::makeDirectory("$basePath/Filament", 0755, true);
         File::makeDirectory("$basePath/Inertia", 0755, true);
+        File::makeDirectory("$basePath/Views",0755,true);
+        File::makeDirectory("$basePath/Database/Migrations",  0755,true);
 
         // Service Provider
         File::put("$basePath/PluginServiceProvider.php", $this->provider($name));
@@ -46,10 +48,31 @@ class MakePlugin extends Command
         // Inertia Page
         File::put("$basePath/Inertia/Index.vue", $this->inertiaVue());
 
+        // View page
+        File::put("$basePath/Views/app.blade.php" , $this->appView());
+
+        //Migration .keep
+        File::put("$basePath/Database/Migrations/.keep","");
+
+        // Plugin info .json
+        File::put("$basePath/plugin.json" , $this->pluginInfo($name));
         $this->info("Plugin '$name' generated successfully!");
     }
 
 
+    private function pluginInfo($name)
+    {
+        $info = [
+            "plugin_name"=> $name,
+            "plugin_desc" => "Description of ".$name." plugins",
+            "author_name" => "jadicms",
+            "author_email" => "youremail@example.com",
+            "plugin_url" => "https://javaradigital.com",
+            "license" => "MIT",
+            "version" => "1.0"
+        ];
+        return json_encode($info,JSON_PRETTY_PRINT);
+    }
     private function provider($name)
     {
         return <<<PHP
@@ -64,6 +87,8 @@ class PluginServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+     // Views
+        \$this->loadViewsFrom(__DIR__.'/Views', 'Blog');
         // Web
         Route::middleware('web')
             ->group(__DIR__.'/web.php');
@@ -79,6 +104,10 @@ class PluginServiceProvider extends ServiceProvider
                 //
             });
         }
+         // Migrations (opsional)
+        if (is_dir(__DIR__.'/Database/Migrations')) {
+            \$this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+        }
     }
 }
 PHP;
@@ -88,7 +117,7 @@ PHP;
     {
         return <<<PHP
 <?php
-
+use Illuminate\Support\Facades\Route;
 use Plugins\\$name\\Http\\Controllers\\{$name}Controller;
 
 Route::get('/plugin-$name', [{$name}Controller::class, 'index']);
@@ -99,7 +128,7 @@ PHP;
     {
         return <<<PHP
 <?php
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 Route::get('/plugin-test', fn() => ['plugin' => true]);
@@ -138,7 +167,7 @@ class {$name}Controller extends Controller
 {
     public function index()
     {
-        return Inertia::render('Plugins/$name/Index');
+        return view('{$name}::app');
     }
 }
 PHP;
@@ -180,5 +209,12 @@ PHP;
 <script setup>
 </script>
 VUE;
+    }
+
+    private function appView()
+    {
+        return <<<VIEW
+        <h1> Hello this is view </h1>
+        VIEW;
     }
 }

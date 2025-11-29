@@ -16,7 +16,7 @@ return new class extends Migration
 
             // FK ke post (JPost)
             $table->unsignedBigInteger('post_id');
-            $table->foreign('post_id')->references('id')->on('jposts')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
 
             // FK ke user (nullable untuk guest)
             $table->unsignedBigInteger('user_id')->nullable();

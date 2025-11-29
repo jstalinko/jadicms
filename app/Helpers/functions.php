@@ -47,9 +47,10 @@ if (!function_exists('j_del_option')) {
 |--------------------------------------------------------------------------
 */
 if (!function_exists('j_set_options')) {
-    function j_set_options(array $options, string $autoload = 'yes')
+    function j_set_options(array $options, bool $autoload = true)
     {
         foreach ($options as $key => $value) {
+            if($key==null)continue;
             Option::updateOrCreate(
                 ['option_name' => $key],
                 ['option_value' => $value, 'autoload' => $autoload]
