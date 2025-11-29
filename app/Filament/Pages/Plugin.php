@@ -44,13 +44,10 @@ class Plugin extends Page implements HasTable
             if (File::exists($jsonPath)) {
                 $config = json_decode(File::get($jsonPath), true);
                 
-                // Cek status aktif/nonaktif menggunakan fungsi yang Anda sediakan
                 $statusKey = 'plugin_' . strtolower($pluginName) . '_status';
-                // Asumsi fungsi get_option tersedia dan mengembalikan nilai
                 $status = function_exists('j_get_option') ? 
                           j_get_option($statusKey, 'disabled') : 
                           'disabled';
-                
                 $pluginsData[] = [
                     'directory_name' => $pluginName, // Kunci unik untuk aksi
                     'plugin_name' => $config['plugin_name'] ?? 'N/A',
@@ -66,20 +63,15 @@ class Plugin extends Page implements HasTable
         $this->plugins = $pluginsData;
     }
 
-    // Metode ini diperlukan oleh InteractsWithTable, tapi kita gunakan data array, bukan Eloquent
     protected function getTableQuery(): ?Builder
     {
-        // Karena kita tidak menggunakan model Eloquent, kita kembalikan null
         return null; 
     }
-    
-    // Metode untuk menyediakan data ke tabel
     protected function getTableData(): array
     {
         return $this->plugins;
     }
 
-    // Konfigurasi Tabel
     protected function table(Table $table): Table
     {
         return $table

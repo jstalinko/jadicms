@@ -7,6 +7,7 @@ use App\Models\Option;
 | Set 1 option (create or update)
 |--------------------------------------------------------------------------
 */
+
 if (!function_exists('j_set_option')) {
     function j_set_option(string $key, string $value, string $autoload = 'yes')
     {
@@ -50,7 +51,7 @@ if (!function_exists('j_set_options')) {
     function j_set_options(array $options, bool $autoload = true)
     {
         foreach ($options as $key => $value) {
-            if($key==null)continue;
+            if ($key == null) continue;
             Option::updateOrCreate(
                 ['option_name' => $key],
                 ['option_value' => $value, 'autoload' => $autoload]
@@ -91,10 +92,22 @@ if (!function_exists('j_del_options')) {
 | Get plugins path
 |---------------------------------------------------------------------------
 */
-if(function_exists('j_plugin_path'))
-{
+if (!function_exists('j_plugin_path')) {
     function j_plugin_path(string $path)
     {
-        return app_path(DIRECTORY_SEPARATOR.'/Plugins');
+        return app_path(DIRECTORY_SEPARATOR . '/Plugins');
+    }
+}
+/*
+|---------------------------------------------------------------------------
+| Get active theme
+|---------------------------------------------------------------------------
+ */
+if (!function_exists('j_active_theme')) {
+    function j_active_theme()
+    {
+        return cache()->remember('active_theme', 60, function () {
+            return j_get_option('active_theme','default');
+        });
     }
 }

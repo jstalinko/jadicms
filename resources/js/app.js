@@ -4,8 +4,16 @@ import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/inertia-vue3'
 import { InertiaProgress } from '@inertiajs/progress'
 
+const theme = document.documentElement.dataset.theme;
+
 createInertiaApp({
-  resolve: name => import(`./Pages/${name}.vue`),
+  resolve: async name => {
+    try {
+        return await import(`./Themes/${theme}/Pages/${name}.vue`)
+    } catch (e) {
+        return await import(`./Themes/default/Pages/${name}.vue`)
+    }
+},
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
@@ -13,4 +21,4 @@ createInertiaApp({
   },
 })
 
-InertiaProgress.init()
+InertiaProgress.init();
