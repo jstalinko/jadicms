@@ -20,9 +20,10 @@ class LabelResource extends Resource
 {
     protected static ?string $model = Label::class;
 
-    protected int $sort=2;
+    protected static ?int $navigationSort=2;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'Label';
 

@@ -18,9 +18,11 @@ class MediaResource extends Resource
 {
     protected static ?string $model = Media::class;
 
-    protected int $sort =3;
+    protected static ?int $navigationSort=4;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     protected static ?string $recordTitleAttribute = 'Media';
 
