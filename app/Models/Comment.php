@@ -46,4 +46,9 @@ class Comment extends Model
     {
         return $this->user->name ?? $this->author_name ?? 'Guest';
     }
+
+    public function getPostTitleAttribute()
+    {
+        return $this->post->title;
+    }
 }

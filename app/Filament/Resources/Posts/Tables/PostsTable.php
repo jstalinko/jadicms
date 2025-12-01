@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Table;
 
 class PostsTable
@@ -16,21 +17,30 @@ class PostsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image'),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('type')
-                    ->searchable(),
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('status')
+                TextColumn::make('authorName')
                     ->searchable(),
-                TextColumn::make('user_id')
-                    ->numeric()
+                TextColumn::make('labels')
+                    ->formatStateUsing(function ($state) {
+                        if($state['taxonomy'] == 'category') {
+                            return $state['name'];
+                        }
+                        return $state['name'];
+                    })->label('Categories')
                     ->sortable(),
-                TextColumn::make('featured_media_id')
-                    ->numeric()
-                    ->sortable(),
+                    TextColumn::make('type')
+                    ->searchable(),
+                BadgeColumn::make('status')
+                    ->label('Status')
+                    ->searchable()->colors([
+                        'success' => 'publish',
+                        'danger' => 'draft',
+                        'warning' => 'pending',
+                    ]),
+                TextColumn::make('commentsCount')
+                    ->label('Comments')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
