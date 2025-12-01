@@ -86,7 +86,7 @@ VUE;
     "theme_description": "Default Theme",
     "theme_url": "https://javaradigital.com",
     "theme_demo_url": "https://jadicms.com",
-    "theme_screenshot": "https://jadicms.com/screenshot.png",
+    "theme_screenshot": "https://placehold.co/300x200/8d6e63/FFFFFF?text={$name}+THEME",
     "theme_license": "MIT",
     "theme_tags": [
         "default",
