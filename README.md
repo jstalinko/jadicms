@@ -11,10 +11,14 @@ JADICMS adalah Sistem Manajemen Konten (CMS) modern yang dirancang untuk kecepat
 
 JADICMS adalah solusi full-stack terintegrasi, menghilangkan kerumitan API terpisah dan memaksimalkan pengalaman SPA (Single Page Application) dalam monorepo Laravel.
 
-| Teknologi | Kategori | Keunggulan Utama |
-| :--- | :--- | :--- |
-| **Laravel** | Backend Powerhouse | Arsitektur, keamanan, dan fungsionalitas PHP yang ekspresif. |
-| **FilamentPHP** | Admin Panel | Antarmuka administrasi yang cantik, mudah dikonfigurasi, dan *batteries-included*. |
-| **Inertia.js** | Adapter Bridge | Menghubungkan Laravel & Vue, menciptakan aplikasi SPA tanpa kompleksitas API. |
-| **Vue.js** | Frontend Reaktivitas | Menyediakan komponen frontend yang cepat, dinamis, dan intuitif. |
-| **Tailwind CSS** | Styling | Desain yang sangat cepat dan responsif dengan *utility-first classes*. |
+| Teknologi        | Kategori             | Keunggulan Utama                                                                   |
+| :--------------- | :------------------- | :--------------------------------------------------------------------------------- |
+| **Laravel**      | Backend Powerhouse   | Arsitektur, keamanan, dan fungsionalitas PHP yang ekspresif.                       |
+| **FilamentPHP**  | Admin Panel          | Antarmuka administrasi yang cantik, mudah dikonfigurasi, dan _batteries-included_. |
+| **Inertia.js**   | Adapter Bridge       | Menghubungkan Laravel & Vue, menciptakan aplikasi SPA tanpa kompleksitas API.      |
+| **Vue.js**       | Frontend Reaktivitas | Menyediakan komponen frontend yang cepat, dinamis, dan intuitif.                   |
+| **Tailwind CSS** | Styling              | Desain yang sangat cepat dan responsif dengan _utility-first classes_.             |
+
+## GOALS
+
+JADICMS terinspirasi dari WordPress dengan fitur dan style code yang sederhana dan mudah dipahami. Gampang untuk di kembangkan dengan basis teknologi yang terbaru dan modern. Menggunakan filament sebagai panel administrasi yang cantik dan mudah dikonfigurasi, laravel sebagai backend yang kuat dan fleksibel, dan vue sebagai frontend yang cepat dan dinamis.
