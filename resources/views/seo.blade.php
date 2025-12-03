@@ -6,11 +6,17 @@
         'icon' => j_get_option('icon'),
         'meta_keywords' => j_get_option('meta_keywords'),
         'meta_description' => j_get_option('meta_description'),
-        'meta_tags' => j_get_option('meta_tags', []),
+        'meta_tags' => j_get_option('meta_tags', '{}'),
     ];
+    $meta_tags = json_decode($setting['meta_tags'], true);
 @endphp
 
 <title>{{ $setting['site_name'] }} - {{ $setting['tagline'] }}</title>
+<!-- link alternate -->
+<link rel="alternate" href="{{ $setting['base_url'] }}" hreflang="{{ app()->getLocale() }}">
+<link rel="canonical" href="{{ $setting['base_url'] }}">
+<link rel="alternate" type="application/rss+xml" href="{{ $setting['base_url'] }}/rss">
+<base href="{{ $setting['base_url'] }}">
 
 <!-- meta tag -->
 <meta name="description" content="{{ $setting['meta_description'] }}">
@@ -42,3 +48,11 @@
 <!-- Favicon -->
 <link rel="icon" href="{{ asset($setting['icon']) }}" type="image/x-icon">
 <link rel="shortcut icon" href="{{ asset($setting['icon']) }}" type="image/x-icon">
+
+
+<!-- Meta Tags -->
+@if (count($meta_tags) > 0)
+    @foreach ($meta_tags as $meta_tag)
+        <meta name="{{ $meta_tag['meta_name'] }}" content="{{ $meta_tag['meta_content'] }}">
+    @endforeach
+@endif
