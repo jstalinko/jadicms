@@ -50,9 +50,10 @@
 
                     <!-- Jika menu biasa (bukan parent dan bukan child) -->
                     <li v-else-if="menu.parent_id === null"
-                        class="cursor-pointer text-white hover:text-purple-300 transition duration-300 font-medium whitespace-nowrap"
-                        @click="router.visit(menu.url)">
+                        class="cursor-pointer text-white hover:text-purple-300 transition duration-300 font-medium whitespace-nowrap">
+                        <Link :href="menu.url">
                         {{ menu.label }}
+                        </Link>
                     </li>
 
                     <!-- CHILD tidak ditampilkan di luar dropdown -->
@@ -66,7 +67,7 @@
 </template>
 
 <script setup>
-import { usePage } from '@inertiajs/inertia-vue3';
+import { usePage, Link } from '@inertiajs/inertia-vue3';
 import { router } from '@inertiajs/vue3';
 
 const $page = usePage();
