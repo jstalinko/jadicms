@@ -6,3 +6,4 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Home'); // akan load resources/js/Pages/Home.vue
 });
+Route::get('/detail', fn() => Inertia::render('Single'));
