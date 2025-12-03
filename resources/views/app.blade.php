@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     @include('seo')
     @vite('resources/js/app.js')
-    <!--  @routes  optional: kalau pakai ziggy -->
+    @inertiaHead
 </head>
 
 <body>

@@ -9,7 +9,7 @@ use App\Models\Option;
 */
 
 if (!function_exists('j_set_option')) {
-    function j_set_option(string $key, string $value, string $autoload = 'yes')
+    function j_set_option(string $key, string $value, bool $autoload = true)
     {
         return Option::updateOrCreate(
             ['option_name' => $key],
@@ -107,7 +107,7 @@ if (!function_exists('j_active_theme')) {
     function j_active_theme()
     {
         return cache()->remember('active_theme', 60, function () {
-            return j_get_option('active_theme','default');
+            return j_get_option('active_theme', 'default');
         });
     }
 }

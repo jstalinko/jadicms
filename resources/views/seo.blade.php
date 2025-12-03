@@ -12,6 +12,7 @@
 @endphp
 
 <title>{{ $setting['site_name'] }} - {{ $setting['tagline'] }}</title>
+<meta name="robots" content="{{ $robots ?? 'index, follow' }}">
 <!-- link alternate -->
 <link rel="alternate" href="{{ $setting['base_url'] }}" hreflang="{{ app()->getLocale() }}">
 <link rel="canonical" href="{{ $setting['base_url'] }}">

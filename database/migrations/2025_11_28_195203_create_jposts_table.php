@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('excerpt')->nullable();
             $table->string('status')->default('publish');
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('featured_media_id')->nullable()->constrained('media');
+            $table->integer('featured_media_id')->nullable();
             $table->timestamps();
         });
     }
