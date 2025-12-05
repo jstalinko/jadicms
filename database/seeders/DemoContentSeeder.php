@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Label;
@@ -16,6 +17,8 @@ class DemoContentSeeder extends Seeder
 {
     public function run(): void
     {
+        $faker = Faker::create();
+
         // ----------------------------------------------------
         // USER
         // ----------------------------------------------------
@@ -29,88 +32,94 @@ class DemoContentSeeder extends Seeder
         // ----------------------------------------------------
         // LABELS (CATEGORIES & TAGS)
         // ----------------------------------------------------
-        $categories = [
+        $categories = collect([
             'Technology',
             'Lifestyle',
-            'Business'
-        ];
-
-        $tags = [
-            'Laravel', 'Vue', 'Filament', 'PHP'
-        ];
-
-        $categoryModels = [];
-        foreach ($categories as $cat) {
-            $categoryModels[] = Label::create([
+            'Business',
+            'Finance',
+            'Travel',
+        ])->map(function ($cat) {
+            return Label::create([
                 'taxonomy' => 'category',
                 'name' => $cat,
-                'slug' => Str::slug($cat)
+                'slug' => Str::slug($cat),
             ]);
-        }
+        });
 
-        $tagModels = [];
-        foreach ($tags as $tag) {
-            $tagModels[] = Label::create([
+        $tags = collect([
+            'Laravel',
+            'Vue',
+            'Filament',
+            'PHP',
+            'JavaScript',
+            'Tailwind',
+            'MySQL'
+        ])->map(function ($tag) {
+            return Label::create([
                 'taxonomy' => 'tag',
                 'name' => $tag,
-                'slug' => Str::slug($tag)
+                'slug' => Str::slug($tag),
             ]);
-        }
+        });
 
         // ----------------------------------------------------
         // LABEL META
         // ----------------------------------------------------
-        foreach (array_merge($categoryModels, $tagModels) as $label) {
+        foreach ($categories->merge($tags) as $label) {
             Labelmeta::create([
                 'label_id' => $label->id,
                 'meta_key' => 'color',
-                'meta_value' => '#'.dechex(rand(0, 0xFFFFFF))
+                'meta_value' => $faker->hexColor(),
             ]);
         }
 
         // ----------------------------------------------------
-        // MEDIA
+        // MEDIA (10 random images)
         // ----------------------------------------------------
-        $media = Media::create([
-            'mime' => 'image/jpg',
-            'path' => '/uploads/demo.jpg',
-            'filename' =>'demo.jpg',
-            'size' => '120',
-            'user_id' => $user->id,
-        ]);
+        $mediaItems = collect([]);
+        for ($i = 1; $i <= 10; $i++) {
+            $mediaItems->push(
+                Media::create([
+                    'mime' => 'image/jpeg',
+                    'path' => "/uploads/demo-$i.jpg",
+                    'filename' => "demo-$i.jpg",
+                    'size' => rand(100000, 300000),
+                    'user_id' => $user->id,
+                ])
+            );
+        }
 
         // ----------------------------------------------------
-        // POSTS
+        // POSTS (faker realistic)
         // ----------------------------------------------------
-        $posts = [];
+        $posts = collect([]);
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
+            $title = $faker->sentence(6);
+
             $post = Post::create([
                 'type' => 'post',
-                'title' => "Demo Post $i",
-                'slug' => Str::slug("demo post $i"),
-                'image' => $media->id,
-                'content' => "This is demo post number $i content.",
-                'excerpt' => "Excerpt of post $i",
+                'title' => $title,
+                'slug' => Str::slug($title . '-' . Str::random(5)),
+                'image' => $mediaItems->random()->id,
+                'content' => $faker->paragraphs(rand(3, 7), true),
+                'excerpt' => $faker->sentence(12),
                 'user_id' => $user->id,
             ]);
 
-            $posts[] = $post;
+            $posts->push($post);
 
-            // Attach category
-            $post->labels()->attach($categoryModels[array_rand($categoryModels)]->id);
+            // categories
+            $post->labels()->attach($categories->random(rand(1, 2))->pluck('id')->toArray());
 
-            // Attach some tags
-            $randomTags = collect($tagModels)->random(rand(1, 3));
-            foreach ($randomTags as $tag) {
-                $post->labels()->attach($tag->id);
-            }
+            // tags
+            $post->labels()->attach($tags->random(rand(2, 5))->pluck('id')->toArray());
 
-            // Add post meta
+            // post meta
             Postmeta::create([
                 'post_id' => $post->id,
                 'meta_key' => 'views',
-                'meta_value' => rand(50, 200),
+                'meta_value' => $faker->numberBetween(50, 2000),
             ]);
         }
 
@@ -118,19 +127,15 @@ class DemoContentSeeder extends Seeder
         // COMMENTS
         // ----------------------------------------------------
         foreach ($posts as $post) {
-            Comment::create([
-                'post_id' => $post->id,
-                'user_id' => $user->id,
-                'content' => 'Great post!',
-            ]);
-
-            Comment::create([
-                'post_id' => $post->id,
-                'user_id' => $user->id,
-                'content' => 'Thanks for sharing!',
-            ]);
+            for ($i = 1; $i <= rand(2, 5); $i++) {
+                Comment::create([
+                    'post_id' => $post->id,
+                    'user_id' => $user->id,
+                    'content' => $faker->sentence(rand(5, 12)),
+                ]);
+            }
         }
 
-        echo "Demo content seeded successfully.\n";
+        echo "Demo content generated using Faker.\n";
     }
 }

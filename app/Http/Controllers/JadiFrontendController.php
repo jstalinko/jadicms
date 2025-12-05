@@ -11,8 +11,8 @@ class JadiFrontendController extends Controller
 
     public function home()
     {
-        $props['posts'] = Post::orderBy('created_at', 'desc')->get();
-        $data['props'] = $props;
+        $props['posts'] = Post::orderBy('created_at', 'desc')->with('meta')->with('labels')->where('type', 'post')->get();
+        $data['jdata'] = $props;
         return Inertia::render('Home', $data);
     }
     public function detailPost(Request $request)

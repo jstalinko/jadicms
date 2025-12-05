@@ -17,9 +17,43 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::create([
+            'name' => 'JadiCMS',
+            'email' => 'admin@jadicms.com',
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
         ]);
+
+        $this->call(GeminiContentSeeder::class);
+
+        // menu
+        j_set_option('menus', json_encode([
+            [
+                'label' => 'Home',
+                'url' => '/',
+                'is_parent' => false,
+                'parent_id' => null
+            ],
+            [
+                'label' => 'About Us',
+                'url' => '/page/about-us',
+                'is_parent' => false,
+                'parent_id' => null
+            ],
+            [
+                'label' => 'Contact Us',
+                'url' => '/page/contact-us',
+                'is_parent' => false,
+                'parent_id' => null
+            ],
+            [
+                'label' => 'Privacy Policy',
+                'url' => '/page/privacy-policy',
+                'is_parent' => false,
+                'parent_id' => null
+            ]
+        ]));
+
+        $this->call(PageCommonSeeder::class);
     }
 }

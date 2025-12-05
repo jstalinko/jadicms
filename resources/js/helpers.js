@@ -62,3 +62,27 @@ export function timeAgo(date) {
     if (diff < 604800) return Math.floor(diff / 86400) + " hari lalu";
     return formatDate(date);
 }
+
+export function parseCategory(labels) {
+    return labels
+        .filter((label) => label.taxonomy === "category")
+        .map((label) => label.name)[0];
+}
+export function parseTagString(labels) {
+    return labels
+        .filter((label) => label.taxonomy === "tag")
+        .map((label) => label.name)
+        .join(", ");
+}
+export function parseTagArray(labels) {
+    return labels
+        .filter((label) => label.taxonomy === "tag")
+        .map((label) => label.name);
+}
+export function dateFormatHuman(date) {
+    return new Date(date).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+}
