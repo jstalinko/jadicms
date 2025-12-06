@@ -123,3 +123,32 @@ if (!function_exists('j_inertia_props')) {
         return $data;
     }
 }
+
+/*
+|---------------------------------------------------------------------------
+| Inject meta SEO
+|---------------------------------------------------------------------------
+ */
+if (!function_exists('j_inertia_meta')) {
+    function j_inertia_meta(
+        string $title,
+        string $desc,
+        string $url,
+        ?string $image = null,
+        ?array $meta_tags = []
+    ) {
+        $meta = [
+            'title' => $title,
+            'description' => $desc,
+            'url' => $url,
+            'image' => $image,
+            ...$meta_tags
+        ];
+
+        // Share ke Inertia (Vue)
+        \Inertia\Inertia::share('j_inertia_meta', $meta);
+
+        // Share ke Blade
+        view()->share('j_inertia_meta', $meta);
+    }
+}

@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { usePage } from '@inertiajs/inertia-vue3';
+import { usePage } from '@inertiajs/vue3';
 const $page = usePage();
-const [websiteName, slogan] = [$page.props.value.setting.site_name, $page.props.value.setting.tagline]
+const [websiteName, slogan] = [$page.props.setting.site_name, $page.props.setting.tagline]
 </script>

@@ -34,6 +34,10 @@ export function routeUrl(type, slug) {
             return "/tag/" + slug;
         case "author":
             return "/author/" + slug;
+        case "archive":
+            return "/archive/" + slug;
+        case "search":
+            return "/search?q=" + slug;
         default:
             return "/";
     }

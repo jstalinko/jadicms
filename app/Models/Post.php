@@ -79,4 +79,31 @@ class Post extends Model
             ];
         });
     }
+    public static function getPostByCategory(string $slugCategory)
+    {
+        return self::where('type', 'post')
+            ->whereHas('labels', function ($q) use ($slugCategory) {
+                $q->where('taxonomy', 'category')
+                    ->where('slug', $slugCategory);
+            })
+            ->latest();
+    }
+    public static function getPostArchive(string $yearMonth)
+    {
+        [$year, $month] = explode('-', $yearMonth);
+
+        return self::where('type', 'post')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->latest();
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->labels->where('taxonomy', 'category')->first()->name;
+    }
+    public function getTagsAttribute()
+    {
+        return $this->labels->where('taxonomy', 'tag')->pluck('name')->toArray();
+    }
 }

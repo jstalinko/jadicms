@@ -67,11 +67,9 @@
 </template>
 
 <script setup>
-import { usePage, Link } from '@inertiajs/inertia-vue3';
-import { router } from '@inertiajs/vue3';
-
+import { usePage, Link, router } from '@inertiajs/vue3';
 const $page = usePage();
-const [websiteName, slogan, menus] = [$page.props.value.setting.site_name, $page.props.value.setting.tagline, $page.props.value.setting.menus]
+const [websiteName, slogan, menus] = [$page.props.setting.site_name, $page.props.setting.tagline, $page.props.setting.menus]
 
 
 </script>
