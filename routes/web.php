@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 Route::group(['middleware' => 'seo'], function () {
     Route::get('/', [JadiFrontendController::class, 'home'])->name('home');
+    Route::get('/page/{slug}', [JadiFrontendController::class, 'detailPage'])->name('page');
     Route::get('/category/{slug}', [JadiFrontendController::class, 'categoryPost'])->name('category.post');
     Route::get('/tag/{slug}', [JadiFrontendController::class, 'tagPost'])->name('tag.post');
     Route::get('/author/{slug}', [JadiFrontendController::class, 'authorPost'])->name('author.post');

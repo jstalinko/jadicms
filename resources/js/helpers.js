@@ -6,10 +6,17 @@ export function currencyFormat(number) {
 }
 
 export function imageUrl(url) {
+    let seed = Math.floor(Math.random() * 100);
+    if (url === null) {
+        return "https://picsum.photos/seed/" + seed + "/1200/800";
+    }
     if (url.match(/^http/)) {
         return url;
+    } else if (url.match(/storage/)) {
+        return url;
+    } else {
+        return "/storage/" + url;
     }
-    return "/storage/" + url;
 }
 export function breakWord(text, maxLength = 100, ellipsis = "...") {
     if (text.length > maxLength) {
@@ -79,10 +86,22 @@ export function parseTagArray(labels) {
         .filter((label) => label.taxonomy === "tag")
         .map((label) => label.name);
 }
+export function parseMetaView(meta) {
+    return meta
+        .filter((meta) => meta.meta_key === "views")
+        .map((meta) => meta.meta_value)[0];
+}
 export function dateFormatHuman(date) {
     return new Date(date).toLocaleDateString("id-ID", {
         day: "2-digit",
         month: "short",
         year: "numeric",
     });
+}
+export function parseAuthorName(author) {
+    // get author.name
+    return author.name;
+}
+export function ucfirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }

@@ -29,6 +29,25 @@
                             </button>
                         </div>
                     </div>
+                    <!-- Categories -->
+                    <div class="backdrop-blur-xl bg-white/10 rounded-2xl p-6 border border-white/20">
+                        <h3 class="text-2xl font-bold mb-4 text-white flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                            </svg>
+                            Kategori
+                        </h3>
+                        <ul class="space-y-3">
+                            <li v-for="category in categories" :key="category.id"
+                                class="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition duration-300 flex justify-between text-gray-300 hover:text-white">
+                                <span>{{ category.name }}</span>
+                                <span class="backdrop-blur-md bg-purple-500/50 px-3 py-1 rounded-full text-sm">
+                                    {{ category.count }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
 
                     <!-- Archive -->
                     <div class="backdrop-blur-xl bg-white/10 rounded-2xl p-6 border border-white/20">
@@ -105,6 +124,12 @@ const latestPosts = ref([
     { id: 3, title: 'Review Gadget', date: '1 Des 2024' },
     { id: 4, title: 'Cara Memulai Investasi', date: '1 Des 2024' },
     { id: 5, title: 'Panduan Vue.js', date: '30 Nov 2024' }
-])
-
+]);
+const categories = ref([
+    { id: 1, name: 'Teknologi', count: 12 },
+    { id: 2, name: 'Gaya Hidup', count: 25 },
+    { id: 3, name: 'Kesehatan', count: 18 },
+    { id: 4, name: 'Investasi', count: 22 },
+    { id: 5, name: 'Teknologi', count: 15 }
+]);
 </script>

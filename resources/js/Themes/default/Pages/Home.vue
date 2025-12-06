@@ -25,21 +25,22 @@
                 </div>
 
                 <h2 class="text-3xl font-bold mb-4 text-white group-hover:text-purple-300 transition duration-300">
-                    {{ article.title }}
+                    <Link :href="routeUrl('post', article.slug)">{{ article.title }}</Link>
                 </h2>
 
                 <p class="text-gray-300 mb-6 leading-relaxed">
                     {{ excerpt(article.excerpt) }}
                 </p>
 
-                <button
-                    class="px-6 py-3 backdrop-blur-md bg-purple-500/80 hover:bg-purple-600 text-white font-medium rounded-xl transition duration-300 flex items-center">
-                    Baca Selengkapnya
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                </button>
+                <Link :href="routeUrl('post', article.slug)"
+                    class="px-6 py-3 backdrop-blur-md bg-purple-500/80 hover:bg-purple-600 text-white font-medium rounded-xl transition duration-300 flex items-center max-w-fit">
+
+                Baca Selengkapnya
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                </Link>
             </div>
         </article>
         <div class="flex justify-center items-center space-x-2 mt-8">
@@ -73,7 +74,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import AppLayout from '../AppLayout.vue';
-import { dateFormatHuman, excerpt, parseCategory } from '../../../helpers';
+import { dateFormatHuman, excerpt, parseCategory, routeUrl } from '../../../helpers';
+import { Link } from '@inertiajs/inertia-vue3';
 const currentPage = ref(1)
 const perPage = ref(3)
 const prop = defineProps({ jdata: Object });

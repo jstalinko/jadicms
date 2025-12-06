@@ -111,3 +111,15 @@ if (!function_exists('j_active_theme')) {
         });
     }
 }
+/*
+ |---------------------------------------------------------------------------
+ | Format and collect data to inertia with props.
+ |---------------------------------------------------------------------------
+ */
+if (!function_exists('j_inertia_props')) {
+    function j_inertia_props($props = [])
+    {
+        $data['jdata'] = $props;
+        return $data;
+    }
+}
