@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Post extends Model
 {
@@ -55,5 +56,27 @@ class Post extends Model
     public function getCommentsCountAttribute()
     {
         return $this->comments()->count();
+    }
+    public static function getArchiveByMonth()
+    {
+        // pastikan locale bahasa Indonesia
+        Carbon::setLocale('id');
+
+        $items = self::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, COUNT(*) as count")
+            ->where('type', 'post')
+            ->groupBy('ym')
+            ->orderBy('ym', 'desc')
+            ->get();
+
+        return $items->map(function ($item) {
+            $carbon = Carbon::createFromFormat('Y-m', $item->ym);
+
+            return [
+                'month' => $item->ym,
+                'count' => $item->count,
+                'monthHuman' => $carbon->translatedFormat('F Y'),
+                // Contoh: "Februari 2025"
+            ];
+        });
     }
 }

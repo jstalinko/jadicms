@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Label extends Model
 {
-    protected $fillable = ['type','name','slug','description','taxonomy','parent_id','label_order'];
+    protected $fillable = ['type', 'name', 'slug', 'description', 'taxonomy', 'parent_id', 'label_order'];
 
     public function posts()
     {
@@ -16,5 +16,16 @@ class Label extends Model
     public function meta()
     {
         return $this->hasMany(Labelmeta::class, 'label_id');
+    }
+    public static function getCategoryOnly()
+    {
+        return self::where('taxonomy', 'category')
+            ->withCount(['posts as post_count']) // hitung jumlah post
+            ->orderBy('name', 'asc')
+            ->get([
+                'id',
+                'name',
+                'slug'
+            ]);
     }
 }

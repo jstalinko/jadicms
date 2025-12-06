@@ -43,7 +43,7 @@
                                 class="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition duration-300 flex justify-between text-gray-300 hover:text-white">
                                 <span>{{ category.name }}</span>
                                 <span class="backdrop-blur-md bg-purple-500/50 px-3 py-1 rounded-full text-sm">
-                                    {{ category.count }}
+                                    {{ category.post_count }}
                                 </span>
                             </li>
                         </ul>
@@ -61,7 +61,7 @@
                         <ul class="space-y-3">
                             <li v-for="archive in archives" :key="archive.month"
                                 class="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition duration-300 flex justify-between text-gray-300 hover:text-white">
-                                <span>{{ archive.month }}</span>
+                                <span>{{ archive.monthHuman }}</span>
                                 <span class="backdrop-blur-md bg-purple-500/50 px-3 py-1 rounded-full text-sm">
                                     {{ archive.count }}
                                 </span>
@@ -83,7 +83,7 @@
                                 class="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition duration-300 group">
                                 <h4
                                     class="font-medium text-white group-hover:text-purple-300 mb-2 transition duration-300">
-                                    {{ post.title }}
+                                    {{ breakWord(post.title, 60) }}
                                 </h4>
                                 <p class="text-sm text-gray-400 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor">
@@ -91,7 +91,7 @@
                                             d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    {{ post.date }}
+                                    {{ timeAgo(post.created_at) }}
                                 </p>
                             </li>
                         </ul>
@@ -108,28 +108,12 @@
 import { ref } from 'vue';
 import Navbar from './Components/Navbar.vue';
 import Footer from './Components/Footer.vue';
-
+import { usePage } from '@inertiajs/inertia-vue3';
+import { breakWord, formatDate, timeAgo } from '../../helpers';
+const $page = usePage();
 const searchQuery = ref('');
-const archives = ref([
-    { month: 'Desember 2024', count: 12 },
-    { month: 'November 2024', count: 25 },
-    { month: 'Oktober 2024', count: 18 },
-    { month: 'September 2024', count: 22 },
-    { month: 'Agustus 2024', count: 15 }
-])
+const archives = ref($page.props.value.sharedData.archives);
+const latestPosts = ref($page.props.value.sharedData.latest_posts);
+const categories = ref($page.props.value.sharedData.categories);
 
-const latestPosts = ref([
-    { id: 1, title: 'Tips Produktivitas', date: '2 Des 2024' },
-    { id: 2, title: 'Resep Masakan Sehat', date: '2 Des 2024' },
-    { id: 3, title: 'Review Gadget', date: '1 Des 2024' },
-    { id: 4, title: 'Cara Memulai Investasi', date: '1 Des 2024' },
-    { id: 5, title: 'Panduan Vue.js', date: '30 Nov 2024' }
-]);
-const categories = ref([
-    { id: 1, name: 'Teknologi', count: 12 },
-    { id: 2, name: 'Gaya Hidup', count: 25 },
-    { id: 3, name: 'Kesehatan', count: 18 },
-    { id: 4, name: 'Investasi', count: 22 },
-    { id: 5, name: 'Teknologi', count: 15 }
-]);
 </script>

@@ -4,6 +4,10 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Label;
+use App\Models\Post;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Option;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -26,6 +30,19 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
+    private function j_option_autoload()
+    {
+        // Cache 60 menit, bisa kamu ubah
+        $options = Cache::remember('options.autoload', 60, function () {
+            return Option::where('autoload', true)
+                ->pluck('option_value', 'option_name')
+                ->toArray();
+        });
+
+        // Masukkan ke config agar bisa diakses seperti config biasa
+        config(['j_option_autoload' => $options]);
+    }
+
     /**
      * Define the props that are shared by default.
      *
@@ -35,22 +52,61 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-        $setting = [
-            'base_url' => j_get_option('base_url', url('/')),
-            'site_name' => j_get_option('site_name', env('APP_NAME')),
-            'tagline' => j_get_option('tagline'),
-            'icon' => j_get_option('icon'),
-            'meta_keywords' => j_get_option('meta_keywords'),
-            'meta_description' => j_get_option('meta_description'),
-            'meta_tags' => j_get_option('meta_tags', '{}'),
-            'menus' => json_decode(j_get_option('menus', '[]'), true),
-        ];
+        // Load option autoload (cached)
+        $this->j_option_autoload();
+
+        // ============================
+        // SHARE: OPTION SETTINGS (cached 60m)
+        // ============================
+        $setting = Cache::remember('shared.setting', 60, function () {
+            return [
+                'base_url' => j_get_option('base_url', url('/')),
+                'site_name' => j_get_option('site_name', env('APP_NAME')),
+                'tagline' => j_get_option('tagline'),
+                'icon' => j_get_option('icon'),
+                'meta_keywords' => j_get_option('meta_keywords'),
+                'meta_description' => j_get_option('meta_description'),
+                'meta_tags' => j_get_option('meta_tags', '{}'),
+                'menus' => json_decode(j_get_option('menus', '[]'), true),
+            ];
+        });
+
+        // ============================
+        // SHARE: CATEGORY (cached 60m)
+        // ============================
+        $categories = Cache::remember('shared.categories', 60, function () {
+            return Label::getCategoryOnly();
+        });
+
+        // ============================
+        // SHARE: ARCHIVE (cached 60m)
+        // ============================
+        $archives = Cache::remember('shared.archives', 60, function () {
+            return Post::getArchiveByMonth();
+        });
+
+        // ============================
+        // SHARE: LATEST POSTS (refresh tiap 10 menit)
+        // ============================
+        $latestPosts = Cache::remember('shared.latest_posts', 10, function () {
+            return Post::latest()
+                ->where('type', 'post')
+                ->where('status', 'publish')
+                ->take(5)
+                ->get();
+        });
 
         return array_merge(parent::share($request), [
             'flash' => [
                 'message' => fn() => $request->session()->get('message')
             ],
-            'setting' => $setting
+            'setting'       => $setting,
+            'sharedData'    => [
+                'categories'   => $categories,
+                'archives'     => $archives,
+                'latest_posts' => $latestPosts,
+            ],
+            'j_option_autoload' => config('j_option_autoload'),
         ]);
     }
 }
