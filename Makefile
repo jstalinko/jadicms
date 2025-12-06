@@ -1,19 +1,16 @@
 .PHONY: commit push auto
 
+commit_message := $(shell \
+    git status --porcelain | awk '{print $$2}' | paste -sd "," - \
+)
+
 commit:
 	@if [ -z "$$(git status --porcelain)" ]; then \
 		echo "No changes to commit"; \
 	else \
-		echo "Generating AI commit message..."; \
-		php scripts/ai-commit.php > .ai_commit_msg; \
-		if grep -q "NO_CHANGES" .ai_commit_msg; then \
-			echo "No diff found"; \
-		else \
-			echo "Commit message: "; \
-			cat .ai_commit_msg; \
-			git add .; \
-			git commit -m "$$(cat .ai_commit_msg)"; \
-		fi \
+		echo "Committing with message: update: $(commit_message)"; \
+		git add .; \
+		git commit -m "update: $(commit_message)"; \
 	fi
 
 push:
