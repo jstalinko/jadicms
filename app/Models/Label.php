@@ -28,4 +28,15 @@ class Label extends Model
                 'slug'
             ]);
     }
+    public static function getTagsOnly()
+    {
+        return self::where('taxonomy', 'tag')
+            ->withCount(['posts as post_count']) // hitung jumlah post
+            ->orderBy('name', 'asc')
+            ->get([
+                'id',
+                'name',
+                'slug'
+            ]);
+    }
 }
