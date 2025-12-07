@@ -124,47 +124,8 @@
                 </div>
             </div>
 
-            <!-- Comments Section -->
-            <div class="backdrop-blur-xl bg-white/10 rounded-2xl p-8 border border-white/20 mb-8"
-                v-if="post.type === 'post'">
-                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    Komentar ({{ comments.length }})
-                </h3>
-
-                <!-- Comment Form -->
-                <div class="mb-8">
-                    <textarea v-model="newComment" placeholder="Tulis komentar Anda..." rows="4"
-                        class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 backdrop-blur-sm mb-4"></textarea>
-                    <button @click="addComment"
-                        class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition duration-300">
-                        Kirim Komentar
-                    </button>
-                </div>
-
-                <!-- Comments List -->
-                <div class="space-y-6">
-                    <div v-for="comment in comments" :key="comment.id"
-                        class="backdrop-blur-md bg-white/5 rounded-xl p-6 border border-white/10">
-                        <div class="flex items-start space-x-4">
-                            <div
-                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-                                {{ comment.author_name ?? 'Guest' }}
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold text-white">{{ comment.author_name ?? 'Guest' }}</h4>
-                                    <span class="text-sm text-gray-400">{{ formatDate(comment.created_at) }}</span>
-                                </div>
-                                <p class="text-gray-300">{{ comment.content }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <CommentSection :comments="comments" :post_id="post.id" :show="post.type === 'post'"
+                @comment-added="addComment" />
 
             <!-- Related Posts -->
             <div class="backdrop-blur-xl bg-white/10 rounded-2xl p-8 border border-white/20"
@@ -197,21 +158,17 @@
 
 <script setup>
 import AppLayout from '../AppLayout.vue';
-import { parseCategory, parseMetaView, parseTagArray, parseAuthorName, formatDate, imageUrl, ucfirst, routeUrl } from '../../../helpers';
+import CommentSection from '../Components/CommentSection.vue';
+import { parseCategory, parseMetaView, parseTagArray, parseAuthorName, formatDate, imageUrl, ucfirst, routeUrl, http } from '../../../helpers';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 const prop = defineProps({ jdata: Object });
 const post = ref(prop.jdata.post);
 const comments = ref(prop.jdata.comments || []);
 const relatedPosts = ref(prop.jdata.relatedPosts || []);
-
-
-const newComment = ref({
-    name: '',
-    email: '',
-    comment: '',
-    post_id: post.value.id
-});
+const addComment = (comment) => {
+    comments.value.push(comment);
+};
 </script>
 
 <style scoped>

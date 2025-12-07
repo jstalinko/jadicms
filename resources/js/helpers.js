@@ -109,3 +109,16 @@ export function parseAuthorName(author) {
 export function ucfirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+export function jToken() {
+    return document.querySelector('meta[name="jadicms-token"]').content;
+}
+export async function http(path, options) {
+    options.headers = {
+        ...options.headers,
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+            .content,
+        "X-Jadicms-Token": jToken(),
+    };
+    const response = await fetch(path, options);
+    return response.json();
+}

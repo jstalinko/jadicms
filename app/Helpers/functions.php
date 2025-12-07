@@ -1,6 +1,10 @@
 <?php
 
 use App\Models\Option;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -150,5 +154,29 @@ if (!function_exists('j_inertia_meta')) {
 
         // Share ke Blade
         view()->share('j_inertia_meta', $meta);
+    }
+}
+/*
+|---------------------------------------------------------------------------
+| Generate JadiCMS Token
+|---------------------------------------------------------------------------
+ */
+if (!function_exists('j_token')) {
+    function j_token()
+    {
+        return cache()->remember('j_token', 60, function () {
+            return Str::random(60) . time();
+        });
+    }
+}
+/*
+|---------------------------------------------------------------------------
+| Validate JadiCMS Token
+|---------------------------------------------------------------------------
+*/
+if (!function_exists('j_validate_token')) {
+    function j_validate_token($token)
+    {
+        return $token === j_token();
     }
 }
