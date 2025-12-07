@@ -25,8 +25,8 @@ class Plugin extends Page implements HasTable
     protected static ?string $navigationLabel = 'Plugins';
 
     // Kita tidak lagi menggunakan view custom, Filament akan merender view tabel
-    protected  string $view = 'filament.pages.plugin'; 
-    
+    protected  string $view = 'filament.pages.plugin';
+
     // Properti ini akan menampung data plugin
     public array $plugins = [];
 
@@ -43,11 +43,11 @@ class Plugin extends Page implements HasTable
 
             if (File::exists($jsonPath)) {
                 $config = json_decode(File::get($jsonPath), true);
-                
+
                 $statusKey = 'plugin_' . strtolower($pluginName) . '_status';
-                $status = function_exists('j_get_option') ? 
-                          j_get_option($statusKey, 'disabled') : 
-                          'disabled';
+                $status = function_exists('j_get_option') ?
+                    j_get_option($statusKey, 'disabled') :
+                    'disabled';
                 $pluginsData[] = [
                     'directory_name' => $pluginName, // Kunci unik untuk aksi
                     'plugin_name' => $config['plugin_name'] ?? 'N/A',
@@ -65,7 +65,7 @@ class Plugin extends Page implements HasTable
 
     protected function getTableQuery(): ?Builder
     {
-        return null; 
+        return null;
     }
     protected function getTableData(): array
     {
@@ -75,20 +75,22 @@ class Plugin extends Page implements HasTable
     protected function table(Table $table): Table
     {
         return $table
-        ->records(fn() => $this->plugins)
+            ->records(fn() => $this->plugins)
             ->columns([
                 TextColumn::make('plugin_name')
                     ->label('Plugin Name')
-                    ->searchable(query: fn (Builder $query, string $search) => $query->where('plugin_name', 'like', "%$search%")),
+                    ->searchable(query: fn(Builder $query, string $search) => $query->where('plugin_name', 'like', "%$search%")),
                 TextColumn::make('plugin_desc')
                     ->label('Description'),
+                TextColumn::make('author_name')
+                    ->label('Author'),
                 TextColumn::make('version')
                     ->label('Version')
                     ->badge(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'enabled' => 'success',
                         'disabled' => 'danger',
                         default => 'warning',
@@ -96,11 +98,11 @@ class Plugin extends Page implements HasTable
             ])
             ->recordActions([
                 \Filament\Actions\Action::make('toggle_status')
-                    ->label(fn (array $record): string => $record['status'] === 'enabled' ? 'Disable' : 'Enable')
-                    ->color(fn (array $record): string => $record['status'] === 'enabled' ? 'danger' : 'success')
-                    ->icon(fn (array $record): string => $record['status'] === 'enabled' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->label(fn(array $record): string => $record['status'] === 'enabled' ? 'Disable' : 'Enable')
+                    ->color(fn(array $record): string => $record['status'] === 'enabled' ? 'danger' : 'success')
+                    ->icon(fn(array $record): string => $record['status'] === 'enabled' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->requiresConfirmation()
-                    ->action(fn (array $record) => $this->togglePluginStatus($record)),
+                    ->action(fn(array $record) => $this->togglePluginStatus($record)),
             ]);
     }
 
@@ -113,10 +115,10 @@ class Plugin extends Page implements HasTable
         // Panggil fungsi j_set_option
         if (function_exists('j_set_option')) {
             j_set_option($key, $newStatus);
-            
-          Notification::make('plugin_activated')->success()->title("Plugin **{$record['plugin_name']}** Enabled!")->send();
+
+            Notification::make('plugin_activated')->success()->title("Plugin **{$record['plugin_name']}** Enabled!")->send();
         } else {
-          Notification::make('plugin_deactivated')->success()->title("Plugin **{$record['plugin_name']}** Disabled!")->send();
+            Notification::make('plugin_deactivated')->success()->title("Plugin **{$record['plugin_name']}** Disabled!")->send();
         }
 
         // Muat ulang data untuk menampilkan status terbaru

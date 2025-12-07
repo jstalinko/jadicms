@@ -27,14 +27,14 @@ class Setting extends Page implements Forms\Contracts\HasForms
 
     public ?array $data = [];
 
-   public function mount(): void
-{
-    $this->data = $this->loadSettings();
+    public function mount(): void
+    {
+        $this->data = $this->loadSettings();
 
-    if (isset($this->data['meta_tags']) && is_string($this->data['meta_tags'])) {
-        $this->data['meta_tags'] = json_decode($this->data['meta_tags'], true);
+        if (isset($this->data['meta_tags']) && is_string($this->data['meta_tags'])) {
+            $this->data['meta_tags'] = json_decode($this->data['meta_tags'], true);
+        }
     }
-}
     public function loadSettings(): array
     {
         return [
@@ -44,26 +44,26 @@ class Setting extends Page implements Forms\Contracts\HasForms
             'icon'             => j_get_option('icon'),
             'meta_keywords'    => j_get_option('meta_keywords'),
             'meta_description' => j_get_option('meta_description'),
-            'meta_tags'        => j_get_option('meta_tags', []),
+            'meta_tags'        => j_get_option('meta_tags', "[]"),
         ];
     }
 
     public function save(): void
-    {// Ambil state form Filament
-    $data = $this->form->getState();
+    { // Ambil state form Filament
+        $data = $this->form->getState();
 
-    // Pastikan kunci meta_tags diubah ke JSON jika dia array
-    if (isset($data['meta_tags']) && is_array($data['meta_tags'])) {
-        $data['meta_tags'] = json_encode($data['meta_tags'], JSON_PRETTY_PRINT);
-    }
+        // Pastikan kunci meta_tags diubah ke JSON jika dia array
+        if (isset($data['meta_tags']) && is_array($data['meta_tags'])) {
+            $data['meta_tags'] = json_encode($data['meta_tags'], JSON_PRETTY_PRINT);
+        }
 
-    // Simpan menggunakan helper WP-like
-    j_set_options($data);
+        // Simpan menggunakan helper WP-like
+        j_set_options($data);
 
-    Notification::make()
-        ->title('Settings saved!')
-        ->success()
-        ->send();
+        Notification::make()
+            ->title('Settings saved!')
+            ->success()
+            ->send();
     }
 
     public function form(Schema $schema): Schema

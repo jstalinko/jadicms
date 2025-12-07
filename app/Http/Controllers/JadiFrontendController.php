@@ -9,6 +9,11 @@ use App\Models\Comment;
 
 class JadiFrontendController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Frontend Controller
+    |--------------------------------------------------------------------------
+    */
 
     public function home()
     {
@@ -23,6 +28,7 @@ class JadiFrontendController extends Controller
         $props['posts'] = Post::orderBy('created_at', 'desc')->with('meta')->with('labels')->where('type', 'post')->get();
         return Inertia::render('Home', j_inertia_props($props));
     }
+
     public function detailPost(Request $request)
     {
         $slug = $request->slug;
@@ -45,6 +51,7 @@ class JadiFrontendController extends Controller
         $props['relatedPosts'] = $relatedPosts;
         return Inertia::render('Single', j_inertia_props($props));
     }
+
     public function detailPage(Request $request)
     {
 
@@ -66,19 +73,33 @@ class JadiFrontendController extends Controller
     public function categoryPost(Request $request)
     {
         $slug = $request->slug;
+        $filterValue = "";
         $posts = Post::getPostByCategory($slug)->with('labels')->with('meta')->with('author')->get();
-        j_inertia_meta(
-            $posts->first()->category_name . ' - ' . config('j_option_autoload.site_name'),
-            $posts->first()->category_name,
-            url('category/' . $slug),
-            url('storage' . $posts->first()->image),
-            json_decode(config('j_option_autoload.meta_tags'), true)
-        );
+        if (count($posts) > 0) {
+            j_inertia_meta(
+                $posts?->first()?->category_name . ' - ' . config('j_option_autoload.site_name'),
+                $posts?->first()?->category_name,
+                url('category/' . $slug),
+                url('storage' . $posts?->first()?->image),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = $posts?->first()?->category_name;
+        } else {
+            j_inertia_meta(
+                'Category not found - ' . config('j_option_autoload.site_name'),
+                'Category not found',
+                url('category/' . $slug),
+                url('storage' . config('j_option_autoload.icon')),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = 'Post not found';
+        }
         $props['posts'] = $posts;
         $props['filterType'] = 'category';
-        $props['filterValue'] = $posts->first()->category_name;
+        $props['filterValue'] = $filterValue;
         return Inertia::render('PostFilter', j_inertia_props($props));
     }
+
     public function archivePost(Request $request)
     {
         $slug = $request->slug;
@@ -95,20 +116,62 @@ class JadiFrontendController extends Controller
         $props['filterValue'] = $slug;
         return Inertia::render('PostFilter', j_inertia_props($props));
     }
+
     public function searchPost(Request $request)
     {
         $search = $request->query('q');
         $posts = Post::where('title', 'like', '%' . $search . '%')->with('labels')->with('meta')->with('author')->get();
-        j_inertia_meta(
-            "Search result for " . $search . ' - ' . config('j_option_autoload.site_name'),
-            "Search result for " . $search,
-            url('search/' . $search),
-            url('storage' . $posts->first()->image),
-            json_decode(config('j_option_autoload.meta_tags'), true)
-        );
+        if (count($posts) > 0) {
+            j_inertia_meta(
+                "Search result for " . $search . ' - ' . config('j_option_autoload.site_name'),
+                "Search result for " . $search,
+                url('search/' . $search),
+                url('storage' . $posts->first()->image),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = $search;
+        } else {
+            j_inertia_meta(
+                "Search result for " . $search . ' - ' . config('j_option_autoload.site_name'),
+                "Search result for " . $search,
+                url('search/' . $search),
+                url('storage' . config('j_option_autoload.icon')),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = 'Post not found';
+        }
         $props['posts'] = $posts;
         $props['filterType'] = 'search';
-        $props['filterValue'] = $search;
+        $props['filterValue'] = $filterValue;
+        return Inertia::render('PostFilter', j_inertia_props($props));
+    }
+
+    public function tagPost(Request $request)
+    {
+        $slug = $request->slug;
+        $posts = Post::getPostByTag($slug)->with('labels')->with('meta')->with('author')->get();
+        if (count($posts) > 0) {
+            j_inertia_meta(
+                "Tag " . $slug . ' - ' . config('j_option_autoload.site_name'),
+                "Tag " . $slug,
+                url('tag/' . $slug),
+                url('storage' . $posts->first()->image),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = $slug;
+        } else {
+            j_inertia_meta(
+                "Tag " . $slug . ' - ' . config('j_option_autoload.site_name'),
+                "Tag " . $slug,
+                url('tag/' . $slug),
+                url('storage' . config('j_option_autoload.icon')),
+                json_decode(config('j_option_autoload.meta_tags'), true)
+            );
+            $filterValue = 'Post not found';
+        }
+        $props['posts'] = $posts;
+        $props['filterType'] = 'tag';
+        $props['filterValue'] = $filterValue;
         return Inertia::render('PostFilter', j_inertia_props($props));
     }
 }

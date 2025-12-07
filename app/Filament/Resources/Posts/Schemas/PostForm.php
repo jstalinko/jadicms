@@ -20,6 +20,9 @@ class PostForm
                 FileUpload::make('image')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
+                    ->directory('posts')
+                    ->visibility('public')
                     ->columnSpanFull(),
                 TextInput::make('title')
                     ->required()

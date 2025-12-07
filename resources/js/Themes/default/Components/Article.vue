@@ -2,7 +2,7 @@
     <article v-for="article in paginatedArticles" :key="article.id"
         class="group relative backdrop-blur-xl bg-white/10 rounded-2xl overflow-hidden border border-white/20 hover:border-purple-400/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20">
         <div class="relative overflow-hidden">
-            <img :src="article.image" :alt="article.title"
+            <img :src="imageUrl(article.image)" :alt="article.title"
                 class="w-full h-72 object-cover transform group-hover:scale-110 transition duration-700" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div class="absolute top-4 left-4">
@@ -66,7 +66,7 @@
     </div>
 </template>
 <script setup>
-import { dateFormatHuman, excerpt, parseCategory, routeUrl } from '../../../helpers';
+import { dateFormatHuman, excerpt, imageUrl, parseCategory, routeUrl } from '../../../helpers';
 import { Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 const prop = defineProps({ articles: Object, perPage: Number });

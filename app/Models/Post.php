@@ -97,6 +97,15 @@ class Post extends Model
             ->whereMonth('created_at', $month)
             ->latest();
     }
+    public static function getPostByTag(string $slugTag)
+    {
+        return self::where('type', 'post')
+            ->whereHas('labels', function ($q) use ($slugTag) {
+                $q->where('taxonomy', 'tag')
+                    ->where('slug', $slugTag);
+            })
+            ->latest();
+    }
 
     public function getCategoryNameAttribute()
     {

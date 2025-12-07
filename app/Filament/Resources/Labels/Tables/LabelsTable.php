@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class LabelsTable
@@ -16,7 +17,7 @@ class LabelsTable
     {
         return $table
             ->columns([
-                                BadgeColumn::make('taxonomy')
+                BadgeColumn::make('taxonomy')
                     ->searchable()->label('Type'),
                 TextColumn::make('name')
                     ->searchable(),
@@ -30,7 +31,12 @@ class LabelsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('taxonomy')
+                    ->options([
+                        'category' => 'Category',
+                        'tag' => 'Tag',
+                    ])
+                    ->label('Type')
             ])
             ->recordActions([
                 ViewAction::make(),

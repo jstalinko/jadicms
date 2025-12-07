@@ -96,6 +96,7 @@ class Theme extends Page
     {
         // Simpan tema aktif (ubah ke storage/settings/table terserah kamu)
         j_set_option('active_theme', $theme);
+        cache()->forget('active_theme');
 
         $this->activeTheme = $theme;
 

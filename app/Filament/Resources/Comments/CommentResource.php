@@ -18,11 +18,13 @@ use Filament\Tables\Table;
 
 class CommentResource extends Resource
 {
+    protected static ?int $navigationSort = 5;
     protected static ?string $model = Comment::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ChatBubbleLeftRight;
 
     protected static ?string $recordTitleAttribute = 'Comment';
+
 
     public static function form(Schema $schema): Schema
     {

@@ -79,7 +79,9 @@
                     <div class="flex flex-wrap gap-3">
                         <span v-for="tag in parseTagArray(post.labels)" :key="tag"
                             class="px-4 py-2 backdrop-blur-md bg-purple-500/30 hover:bg-purple-500/50 text-purple-200 rounded-lg cursor-pointer transition duration-300">
-                            #{{ tag }}
+                            <Link :href="routeUrl('tag', tag)">
+                                #{{ tag }}
+                            </Link>
                         </span>
                     </div>
                 </div>
@@ -195,7 +197,8 @@
 
 <script setup>
 import AppLayout from '../AppLayout.vue';
-import { parseCategory, parseMetaView, parseTagArray, parseAuthorName, formatDate, imageUrl, ucfirst } from '../../../helpers';
+import { parseCategory, parseMetaView, parseTagArray, parseAuthorName, formatDate, imageUrl, ucfirst, routeUrl } from '../../../helpers';
+import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 const prop = defineProps({ jdata: Object });
 const post = ref(prop.jdata.post);
