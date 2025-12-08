@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Comment;
+use APp\Helpers\Hook;
 
 class JadiFrontendController extends Controller
 {
@@ -17,6 +18,8 @@ class JadiFrontendController extends Controller
 
     public function home()
     {
+
+
         j_inertia_meta(
             config('j_option_autoload.site_name') . ' - ' . config('j_option_autoload.tagline'),
             config('j_option_autoload.meta_description'),

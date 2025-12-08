@@ -3,5 +3,5 @@
 return [
     App\Providers\AppServiceProvider::class,
     App\Providers\Filament\AdminPanelProvider::class,
-    Plugins\Blog\PluginServiceProvider::class
+    App\Providers\PluginServiceProvider::class,
 ];

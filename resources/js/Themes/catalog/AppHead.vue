@@ -19,14 +19,12 @@
         <meta name="twitter:title" :content="meta?.title ?? defaultTitle" />
         <meta name="twitter:description" :content="meta?.description" />
         <meta name="twitter:image" :content="meta?.image ?? defaultImage" />
-    </Head>
-    <HookRenderer place="header" />
 
+    </Head>
 </template>
 <script setup>
 import { usePage, Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import HookRenderer from './Components/HookRenderer.vue';
 const $page = usePage();
 const meta = ref($page.props.j_inertia_meta);
 const setting = ref($page.props.setting);

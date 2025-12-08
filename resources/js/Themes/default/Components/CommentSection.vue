@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            <HookRenderer place="comment_after" />
 
             <!-- Load More Button -->
             <div v-if="hasMore" class="text-center pt-4">
@@ -66,6 +67,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { http, formatDate } from '../../../helpers';
+import HookRenderer from './HookRenderer.vue';
 
 const prop = defineProps({
     comments: Object,

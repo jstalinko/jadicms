@@ -26,6 +26,8 @@ export function breakWord(text, maxLength = 100, ellipsis = "...") {
 }
 export function routeUrl(type, slug) {
     switch (type) {
+        case "page":
+            return "/page/" + slug;
         case "post":
             return "/" + slug;
         case "category":

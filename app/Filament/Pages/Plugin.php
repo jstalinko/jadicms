@@ -12,7 +12,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 
 class Plugin extends Page implements HasTable
@@ -24,19 +24,15 @@ class Plugin extends Page implements HasTable
     protected static string|UnitEnum|null $navigationGroup = 'Customize';
     protected static ?string $navigationLabel = 'Plugins';
 
-    // Kita tidak lagi menggunakan view custom, Filament akan merender view tabel
-    protected  string $view = 'filament.pages.plugin';
+    protected string $view = 'filament.pages.plugin';
 
-    // Properti ini akan menampung data plugin
     public array $plugins = [];
 
     public function mount(): void
     {
-        // 1. Dapatkan daftar direktori plugin
         $pluginDirectories = File::directories(base_path('plugins'));
         $pluginsData = [];
 
-        // 2. Loop melalui setiap direktori dan baca plugin.json
         foreach ($pluginDirectories as $dir) {
             $pluginName = basename($dir);
             $jsonPath = $dir . '/plugin.json';
@@ -44,18 +40,16 @@ class Plugin extends Page implements HasTable
             if (File::exists($jsonPath)) {
                 $config = json_decode(File::get($jsonPath), true);
 
-                $statusKey = 'plugin_' . strtolower($pluginName) . '_status';
-                $status = function_exists('j_get_option') ?
-                    j_get_option($statusKey, 'disabled') :
-                    'disabled';
+                $isActive = isset($config['active']) && $config['active'] === true;
+
                 $pluginsData[] = [
-                    'directory_name' => $pluginName, // Kunci unik untuk aksi
+                    'directory_name' => $pluginName,
                     'plugin_name' => $config['plugin_name'] ?? 'N/A',
                     'plugin_desc' => $config['plugin_desc'] ?? 'N/A',
                     'version' => $config['version'] ?? 'N/A',
                     'author_name' => $config['author_name'] ?? 'N/A',
-                    'status' => $status,
-                    'status_key' => $statusKey,
+                    'status' => $isActive ? 'enabled' : 'disabled',
+                    'json_path' => $jsonPath,
                 ];
             }
         }
@@ -67,6 +61,7 @@ class Plugin extends Page implements HasTable
     {
         return null;
     }
+
     protected function getTableData(): array
     {
         return $this->plugins;
@@ -78,50 +73,66 @@ class Plugin extends Page implements HasTable
             ->records(fn() => $this->plugins)
             ->columns([
                 TextColumn::make('plugin_name')
-                    ->label('Plugin Name')
-                    ->searchable(query: fn(Builder $query, string $search) => $query->where('plugin_name', 'like', "%$search%")),
+                    ->label('Plugin Name'),
+
                 TextColumn::make('plugin_desc')
                     ->label('Description'),
+
                 TextColumn::make('author_name')
                     ->label('Author'),
+
                 TextColumn::make('version')
                     ->label('Version')
                     ->badge(),
+
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn(string $state) => match ($state) {
                         'enabled' => 'success',
                         'disabled' => 'danger',
                         default => 'warning',
                     }),
             ])
             ->recordActions([
-                \Filament\Actions\Action::make('toggle_status')
-                    ->label(fn(array $record): string => $record['status'] === 'enabled' ? 'Disable' : 'Enable')
-                    ->color(fn(array $record): string => $record['status'] === 'enabled' ? 'danger' : 'success')
-                    ->icon(fn(array $record): string => $record['status'] === 'enabled' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                Action::make('toggle_status')
+                    ->label(fn(array $record) => $record['status'] === 'enabled' ? 'Disable' : 'Enable')
+                    ->color(fn(array $record) => $record['status'] === 'enabled' ? 'danger' : 'success')
+                    ->icon(
+                        fn(array $record) => $record['status'] === 'enabled'
+                            ? 'heroicon-o-x-circle'
+                            : 'heroicon-o-check-circle'
+                    )
                     ->requiresConfirmation()
                     ->action(fn(array $record) => $this->togglePluginStatus($record)),
             ]);
     }
 
-    // Metode untuk mengubah status plugin
     public function togglePluginStatus(array $record): void
     {
-        $newStatus = $record['status'] === 'enabled' ? 'disabled' : 'enabled';
-        $key = $record['status_key'];
+        $jsonPath = $record['json_path'];
 
-        // Panggil fungsi j_set_option
-        if (function_exists('j_set_option')) {
-            j_set_option($key, $newStatus);
-
-            Notification::make('plugin_activated')->success()->title("Plugin **{$record['plugin_name']}** Enabled!")->send();
-        } else {
-            Notification::make('plugin_deactivated')->success()->title("Plugin **{$record['plugin_name']}** Disabled!")->send();
+        if (!File::exists($jsonPath)) {
+            Notification::make()
+                ->danger()
+                ->title("plugin.json tidak ditemukan!")
+                ->send();
+            return;
         }
 
-        // Muat ulang data untuk menampilkan status terbaru
-        $this->mount();
+        $config = json_decode(File::get($jsonPath), true);
+
+        $current = $config['active'] ?? false;
+        $newStatus = !$current;
+
+        $config['active'] = $newStatus;
+
+        File::put($jsonPath, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+        Notification::make()
+            ->success()
+            ->title("Plugin **{$record['plugin_name']}** " . ($newStatus ? "Enabled" : "Disabled") . "!")
+            ->send();
+        $this->redirect(route('filament.admin.pages.plugin'));
     }
 }

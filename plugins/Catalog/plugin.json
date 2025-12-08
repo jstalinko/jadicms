@@ -1,0 +1,10 @@
+{
+    "plugin_name": "Catalog",
+    "plugin_desc": "Description of Catalog plugin",
+    "version": "1.0.0",
+    "author": "jadicms",
+    "providers": [
+        "Plugins\\Catalog\\src\\PluginServiceProvider"
+    ],
+    "active": true
+}

@@ -64,7 +64,9 @@
             <!-- Article Body -->
             <div class="backdrop-blur-xl bg-white/10 rounded-2xl p-8 border border-white/20 mb-8">
                 <div class="prose prose-invert prose-lg max-w-none">
+                    <HookRenderer place="content_single_before" />
                     <div class="text-gray-300 leading-relaxed mb-6 prose max-w-none" v-html="post.content"></div>
+                    <HookRenderer place="content_single_after" />
                 </div>
 
                 <!-- Tags -->
@@ -162,6 +164,7 @@ import CommentSection from '../Components/CommentSection.vue';
 import { parseCategory, parseMetaView, parseTagArray, parseAuthorName, formatDate, imageUrl, ucfirst, routeUrl, http } from '../../../helpers';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import HookRenderer from '../Components/HookRenderer.vue';
 const prop = defineProps({ jdata: Object });
 const post = ref(prop.jdata.post);
 const comments = ref(prop.jdata.comments || []);

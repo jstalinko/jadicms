@@ -1,9 +1,0 @@
-{
-    "plugin_name": "Blog Starterkit",
-    "plugin_desc": "Just another blog",
-    "author_name": "jadicms",
-    "author_email": "jadicms@javaradigital.com",
-    "plugin_url": "https://javaradigital.com",
-    "version":"1.0",
-    "license":"MIT"
-}

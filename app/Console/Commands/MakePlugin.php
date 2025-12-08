@@ -4,109 +4,113 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class MakePlugin extends Command
 {
     protected $signature = 'make:plugin {name}';
-    protected $description = 'Generate a simple JadiCMS plugin structure';
+    protected $description = 'Generate a JadiCMS plugin structure';
 
     public function handle()
     {
-        $name = $this->argument('name');
-        $basePath = base_path("plugins/$name");
+        $name = Str::studly($this->argument('name'));
+        $pluginPath = base_path("plugins/$name");
 
-        if (File::exists($basePath)) {
-            $this->error("Plugin already exists!");
+        if (File::exists($pluginPath)) {
+            $this->error("Plugin '$name' already exists!");
             return;
         }
 
-        // Create folders
-        File::makeDirectory("$basePath", 0755, true);
-        File::makeDirectory("$basePath/Http/Controllers", 0755, true);
-        File::makeDirectory("$basePath/Models", 0755, true);
-        File::makeDirectory("$basePath/Filament", 0755, true);
-        File::makeDirectory("$basePath/Inertia", 0755, true);
-        File::makeDirectory("$basePath/Views",0755,true);
-        File::makeDirectory("$basePath/Database/Migrations",  0755,true);
+        // ───────────────────────────────────────────────
+        // FOLDER STRUCTURE (sesuai struktur plugin kamu)
+        // ───────────────────────────────────────────────
+        $directories = [
+            "",
+            "/src",
+            "/src/Http/Controllers",
+            "/src/Models",
+            "/src/Filament",
+            "/src/Inertia",
+            "/src/Views",
+            "/src/Database/Migrations",
+            "/routes",
+        ];
 
-        // Service Provider
-        File::put("$basePath/PluginServiceProvider.php", $this->provider($name));
+        foreach ($directories as $dir) {
+            File::makeDirectory("$pluginPath$dir", 0755, true);
+        }
 
-        // Routes
-        File::put("$basePath/web.php", $this->webRoute($name));
-        File::put("$basePath/api.php", $this->apiRoute());
+        // ───────────────────────────────────────────────
+        // FILES
+        // ───────────────────────────────────────────────
+        File::put("$pluginPath/routes/web.php", $this->webRoute($name));
+        File::put("$pluginPath/routes/api.php", $this->apiRoute());
 
-        // Simple model
-        File::put("$basePath/Models/$name.php", $this->model($name));
+        File::put("$pluginPath/src/PluginServiceProvider.php", $this->provider($name));
+        File::put("$pluginPath/src/Http/Controllers/{$name}Controller.php", $this->controller($name));
+        File::put("$pluginPath/src/Models/$name.php", $this->model($name));
+        File::put("$pluginPath/src/Filament/{$name}Resource.php", $this->filamentResource($name));
+        File::put("$pluginPath/src/Inertia/Index.vue", $this->inertiaVue());
+        File::put("$pluginPath/src/Views/app.blade.php", $this->viewFile());
+        File::put("$pluginPath/src/Database/Migrations/.keep", "");
 
-        // Controller
-        File::put("$basePath/Http/Controllers/{$name}Controller.php", $this->controller($name));
+        File::put("$pluginPath/plugin.json", $this->pluginJson($name));
 
-        // Filament Resource
-        File::put("$basePath/Filament/{$name}Resource.php", $this->filamentResource($name));
-
-        // Inertia Page
-        File::put("$basePath/Inertia/Index.vue", $this->inertiaVue());
-
-        // View page
-        File::put("$basePath/Views/app.blade.php" , $this->appView());
-
-        //Migration .keep
-        File::put("$basePath/Database/Migrations/.keep","");
-
-        // Plugin info .json
-        File::put("$basePath/plugin.json" , $this->pluginInfo($name));
         $this->info("Plugin '$name' generated successfully!");
     }
 
+    // ───────────────────────────────────────────────
+    // GENERATORS
+    // ───────────────────────────────────────────────
 
-    private function pluginInfo($name)
+    private function pluginJson($name)
     {
-        $info = [
-            "plugin_name"=> $name,
-            "plugin_desc" => "Description of ".$name." plugins",
-            "author_name" => "jadicms",
-            "author_email" => "youremail@example.com",
-            "plugin_url" => "https://javaradigital.com",
-            "license" => "MIT",
-            "version" => "1.0"
+        $providers = [
+            "Plugins\\$name\\src\\PluginServiceProvider"
         ];
-        return json_encode($info,JSON_PRETTY_PRINT);
+
+        return json_encode([
+            "plugin_name" => $name,
+            "plugin_desc" => "Description of $name plugin",
+            "version" => "1.0.0",
+            "author" => "jadicms",
+            "providers" => $providers
+        ], JSON_PRETTY_PRINT);
     }
+
     private function provider($name)
     {
         return <<<PHP
 <?php
 
-namespace Plugins\\$name;
+namespace Plugins\\$name\\src;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
 class PluginServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
-     // Views
-        \$this->loadViewsFrom(__DIR__.'/Views', 'Blog');
-        // Web
-        Route::middleware('web')
-            ->group(__DIR__.'/web.php');
+        // Views
+        \$this->loadViewsFrom(__DIR__ . '/Views', '$name');
 
-        // API
-        Route::middleware('api')
-            ->prefix('api')
-            ->group(__DIR__.'/api.php');
-
-        // Filament auto load
-        if (class_exists("\\Filament\\Facades\\Filament")) {
-            \\Filament\\Facades\\Filament::serving(function () {
-                //
-            });
+        // Web routes
+        if (file_exists(base_path("plugins/$name/routes/web.php"))) {
+            Route::middleware('web')
+                ->group(base_path("plugins/$name/routes/web.php"));
         }
-         // Migrations (opsional)
-        if (is_dir(__DIR__.'/Database/Migrations')) {
-            \$this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+
+        // API routes
+        if (file_exists(base_path("plugins/$name/routes/api.php"))) {
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path("plugins/$name/routes/api.php"));
+        }
+
+        // Migrations
+        if (is_dir(__DIR__ . '/Database/Migrations')) {
+            \$this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
         }
     }
 }
@@ -117,10 +121,12 @@ PHP;
     {
         return <<<PHP
 <?php
+
 use Illuminate\Support\Facades\Route;
-use Plugins\\$name\\Http\\Controllers\\{$name}Controller;
+use Plugins\\$name\\src\\Http\\Controllers\\{$name}Controller;
 
 Route::get('/plugin-$name', [{$name}Controller::class, 'index']);
+
 PHP;
     }
 
@@ -128,10 +134,31 @@ PHP;
     {
         return <<<PHP
 <?php
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
-Route::get('/plugin-test', fn() => ['plugin' => true]);
+use Illuminate\Support\Facades\Route;
+
+Route::get('/plugin-test', fn() => ['plugin' => 'ok']);
+
+PHP;
+    }
+
+    private function controller($name)
+    {
+        return <<<PHP
+<?php
+
+namespace Plugins\\$name\\src\\Http\\Controllers;
+
+use App\Http\Controllers\Controller;
+
+class {$name}Controller extends Controller
+{
+    public function index()
+    {
+        return view('$name::app');
+    }
+}
+
 PHP;
     }
 
@@ -140,7 +167,7 @@ PHP;
         return <<<PHP
 <?php
 
-namespace Plugins\\$name\\Models;
+namespace Plugins\\$name\\src\\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -150,26 +177,7 @@ class $name extends Model
 
     protected \$table = strtolower('$name');
 }
-PHP;
-    }
 
-    private function controller($name)
-    {
-        return <<<PHP
-<?php
-
-namespace Plugins\\$name\\Http\\Controllers;
-
-use App\Http\Controllers\Controller;
-use Inertia\\Inertia;
-
-class {$name}Controller extends Controller
-{
-    public function index()
-    {
-        return view('{$name}::app');
-    }
-}
 PHP;
     }
 
@@ -178,14 +186,15 @@ PHP;
         return <<<PHP
 <?php
 
-namespace Plugins\\$name\\Filament;
+namespace Plugins\\$name\\src\\Filament;
 
 use Filament\\Resources\\Resource;
 use Filament\\Resources\\Pages\\ListRecords;
+use Plugins\\$name\\src\\Models\\$name as {$name}Model;
 
 class {$name}Resource extends Resource
 {
-    protected static ?string \$model = \\Plugins\\$name\\Models\\$name::class;
+    protected static ?string \$model = {$name}Model::class;
 
     public static function getPages(): array
     {
@@ -194,6 +203,7 @@ class {$name}Resource extends Resource
         ];
     }
 }
+
 PHP;
     }
 
@@ -211,10 +221,10 @@ PHP;
 VUE;
     }
 
-    private function appView()
+    private function viewFile()
     {
-        return <<<VIEW
-        <h1> Hello this is view </h1>
-        VIEW;
+        return <<<BLADE
+<h1>Hello from plugin view!</h1>
+BLADE;
     }
 }

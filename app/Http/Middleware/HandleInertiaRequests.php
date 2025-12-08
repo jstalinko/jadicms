@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Hook;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Label;
@@ -86,6 +87,11 @@ class HandleInertiaRequests extends Middleware
         });
 
         // ============================
+        $pages = Cache::remember('shared.pages', 60, function () {
+            return Post::where('type', 'page')->where('status', 'publish')->get();
+        });
+
+        // ============================
         // SHARE: LATEST POSTS (refresh tiap 10 menit)
         // ============================
         $latestPosts = Cache::remember('shared.latest_posts', 10, function () {
@@ -105,8 +111,10 @@ class HandleInertiaRequests extends Middleware
                 'categories'   => $categories,
                 'archives'     => $archives,
                 'latest_posts' => $latestPosts,
+                'pages'       => $pages,
             ],
             'j_option_autoload' => config('j_option_autoload'),
+            'hooks' => Hook::all()
         ]);
     }
 }

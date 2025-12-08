@@ -6,10 +6,12 @@
             <p class="text-purple-300">{{ slogan }}</p>
         </div>
     </footer>
+    <HookRenderer place="footer" />
 </template>
 
 <script setup>
 import { usePage } from '@inertiajs/vue3';
+import HookRenderer from './HookRenderer.vue';
 const $page = usePage();
 const [websiteName, slogan] = [$page.props.setting.site_name, $page.props.setting.tagline]
 </script>

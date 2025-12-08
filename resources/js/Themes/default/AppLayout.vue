@@ -6,7 +6,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- content -->
                 <div class="lg:col-span-2 space-y-8">
+                    <HookRenderer place="content_before" />
                     <slot />
+                    <HookRenderer place="content_after" />
                 </div>
                 <SideBar />
             </div>
@@ -21,4 +23,5 @@ import Navbar from './Components/Navbar.vue';
 import Footer from './Components/Footer.vue';
 import AppHead from './AppHead.vue';
 import SideBar from './Components/SideBar.vue';
+import HookRenderer from './Components/HookRenderer.vue';
 </script>
