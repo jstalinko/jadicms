@@ -10,10 +10,9 @@
                 </div>
 
                 <nav class="hidden md:flex space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-amber-600">Beranda</a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600">Katalog</a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600">Tentang</a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600">Hubungi</a>
+                    <Link :href="menu.url" class="text-gray-700 hover:text-amber-600" v-for="menu in menus"
+                        :key="menu.id">{{
+                            menu.label }}</Link>
                 </nav>
 
 
@@ -23,8 +22,10 @@
 </template>
 
 <script setup>
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 const $page = usePage();
 const setting = ref($page.props.setting);
+const menus = ref($page.props.setting.menus);
+
 </script>

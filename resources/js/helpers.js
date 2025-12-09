@@ -97,6 +97,16 @@ export function parseMetaView(meta) {
         .filter((meta) => meta.meta_key === "views")
         .map((meta) => meta.meta_value)[0];
 }
+export function parseMeta(meta_key, meta) {
+    return meta
+        .filter((meta) => meta.meta_key === meta_key)
+        .map((meta) => meta.meta_value)[0];
+}
+export function parseMetas(meta_key, meta) {
+    return meta
+        .filter((meta) => meta.meta_key === meta_key)
+        .map((meta) => meta.meta_value);
+}
 export function dateFormatHuman(date) {
     return new Date(date).toLocaleDateString("id-ID", {
         day: "2-digit",

@@ -13,5 +13,6 @@ Route::group(['middleware' => 'seo'], function () {
     Route::get('/author/{slug}', [JadiFrontendController::class, 'authorPost'])->name('author.post');
     Route::get('/archive/{slug}', [JadiFrontendController::class, 'archivePost'])->name('archive.post');
     Route::get('/search', [JadiFrontendController::class, 'searchPost'])->name('search.post');
+    Route::get('/posts', [JadiFrontendController::class, 'posts'])->name('posts');
     Route::get('/{slug}', [JadiFrontendController::class, 'detailPost'])->name('post.detail');
 });

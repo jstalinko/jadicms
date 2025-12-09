@@ -115,4 +115,15 @@ class Post extends Model
     {
         return $this->labels->where('taxonomy', 'tag')->pluck('name')->toArray();
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($product) {
+            // Hapus pivot (labels)
+            $product->labels()->detach();
+
+            // Hapus meta
+            $product->meta()->delete();
+        });
+    }
 }

@@ -1,0 +1,10 @@
+{
+    "plugin_name": "Catalog Pro",
+    "plugin_desc": "Description of Catalog Pro plugin",
+    "version": "1.0.0",
+    "author_name": "jadicms",
+    "providers": [
+        "Plugins\\CatalogPro\\src\\PluginServiceProvider"
+    ],
+    "active": true
+}

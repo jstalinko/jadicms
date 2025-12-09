@@ -4,31 +4,38 @@
             <!-- Products Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div v-for="product in paginatedProducts" :key="product.id"
-                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition group">
+                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition group cursor-pointer"
+                    @click="router.visit(routeUrl('post', product.slug))">
                     <div class="relative overflow-hidden">
-                        <img :src="product.image" :alt="product.name"
+                        <img :src="imageUrl(product.image)" :alt="product.title"
                             class="w-full h-64 object-cover group-hover:scale-110 transition duration-300" />
                     </div>
 
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                            {{ product.name }}
+                            <Link :href="routeUrl('post', product.slug)">{{ product.title }}</Link>
                         </h3>
 
                         <div class="flex items-center mb-2">
                             <div class="flex text-amber-500">
                                 <svg v-for="i in 5" :key="i" class="w-4 h-4"
-                                    :class="i <= product.rating ? 'fill-current' : 'fill-gray-300'" viewBox="0 0 20 20">
+                                    :class="i <= parseMeta('rating', product.meta) || 5 ? 'fill-current' : 'fill-gray-300'"
+                                    viewBox="0 0 20 20">
                                     <path
                                         d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                                 </svg>
                             </div>
-                            <span class="text-sm text-gray-600 ml-2">({{ product.reviews }})</span>
+                            <span class="text-sm text-gray-600 ml-2">({{ product.comment_count ??
+                                Math.floor(Math.random() * 100)
+                            }})</span>
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <span class="text-xl font-bold text-amber-600">
-                                Rp {{ product.price.toLocaleString('id-ID') }}
+                            <span class="text-xl font-bold text-amber-600" v-if="parseMeta('price', product.meta)">
+                                Rp {{ parseMeta('price', product.meta).toLocaleString('id-ID') }}
+                            </span>
+                            <span v-else>
+                                Hubungi Kami
                             </span>
                             <button @click="addToCart(product)"
                                 class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition">
@@ -89,10 +96,12 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { imageUrl, parseMeta, routeUrl } from '../../../helpers';
+import { Link, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     articles: {
-        type: Array,
+        type: Object,
         required: true
     }
 });
@@ -146,8 +155,7 @@ const endItem = computed(() => {
 const goToPage = (page) => {
     if (page >= 1 && page <= totalPages.value) {
         currentPage.value = page;
-        // Scroll ke atas ketika ganti halaman
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
     }
 };
 

@@ -28,20 +28,76 @@ class JadiFrontendController extends Controller
             json_decode(config('j_option_autoload.meta_tags'), true)
         );
 
-        $props['posts'] = Post::orderBy('created_at', 'desc')->with('meta')->with('labels')->where('type', 'post')->get();
+        $props['posts'] = Post::orderBy('created_at', 'desc')
+            ->with(['meta', 'labels', 'comments'])
+            ->where('type', '!=', 'page')
+            ->get()
+            ->map(function ($post) {
+                $post->category = $post->labels
+                    ->where('taxonomy', 'category')
+                    ->pluck('name')
+                    ->first();
+                $post->category_slug = $post->labels
+                    ->where('taxonomy', 'category')
+                    ->pluck('slug')
+                    ->first();
+                $post->tags = $post->labels
+                    ->where('taxonomy', 'tag')
+                    ->pluck('name')
+                    ->values();
+                $post->comment_count = $post->comments->count();
+
+                return $post;
+            });
+
         return Inertia::render('Home', j_inertia_props($props));
+    }
+    public function posts()
+    {
+        j_inertia_meta(
+            "Semua Postingan",
+            "Semua Postingan",
+            url('/posts'),
+            url('/storage' . config('j_option_autoload.icon')),
+            json_decode(config('j_option_autoload.meta_tags'), true)
+        );
+        $props['posts'] = Post::orderBy('created_at', 'desc')->with(['meta', 'labels', 'comments'])->where('type', '!=', 'page')->get()
+            ->map(function ($post) {
+                $post->category = $post->labels->where('taxonomy', 'category')->pluck('name')->first();
+                $post->category_slug = $post->labels->where('taxonomy', 'category')->pluck('slug')->first();
+                $post->tags = $post->labels->where('taxonomy', 'tag')->pluck('name')->values();
+                $post->comment_count = $post->comments->count();
+                return $post;
+            });
+        return Inertia::render('Posts', j_inertia_props($props));
     }
 
     public function detailPost(Request $request)
     {
         $slug = $request->slug;
-        $post = Post::where('slug', $slug)->with('meta')->with('labels')->with('author')->firstOrFail();
+        $post = Post::where('slug', $slug)->with('meta')->with(['labels', 'comments', 'meta'])->firstOrFail();
+        $post->category = $post->labels
+            ->where('taxonomy', 'category')
+            ->pluck('name')
+            ->first();
+        $post->tags = $post->labels
+            ->where('taxonomy', 'tag')
+            ->pluck('name')
+            ->values();
+        $post->comment_count = $post->comments->count();
         $comments = Comment::where('post_id', $post->id)->orderBy('created_at', 'desc')->get();
-        $relatedPosts = Post::where('type', 'post')
+        $relatedPosts = Post::where('type', '!=', 'page')
             ->where('id', '!=', $post->id)
             ->inRandomOrder()
+            ->with(['labels', 'comments', 'meta'])
             ->limit(6)
-            ->get();
+            ->get()
+            ->map(function ($post) {
+                $post->category = $post->labels->where('taxonomy', 'category')->pluck('name')->first();
+                $post->tags = $post->labels->where('taxonomy', 'tag')->pluck('name')->values();
+                $post->comment_count = $post->comments->count();
+                return $post;
+            });
         j_inertia_meta(
             $post->title . ' - ' . config('j_option_autoload.site_name'),
             $post->excerpt,
