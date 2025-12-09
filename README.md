@@ -22,3 +22,6 @@ JADICMS adalah solusi full-stack terintegrasi, menghilangkan kerumitan API terpi
 ## GOALS
 
 JADICMS terinspirasi dari WordPress dengan fitur dan style code yang sederhana dan mudah dipahami. Gampang untuk di kembangkan dengan basis teknologi yang terbaru dan modern. Menggunakan filament sebagai panel administrasi yang cantik dan mudah dikonfigurasi, laravel sebagai backend yang kuat dan fleksibel, dan vue sebagai frontend yang cepat dan dinamis.
+
+## Use Case
+ini adalah project pribadi yang saya kembangkan dan saya gunakan untuk mempercepat pekerjaan saya sebagai web developer, utamanya pembuatan website,blog,company profile dan lain-nya. Feel free to contribute 👍🏿
