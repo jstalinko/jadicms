@@ -123,7 +123,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { imageUrl, parseMetas } from '../../../helpers';
+import { imageUrl, parseMeta } from '../../../helpers';
 import Breadcumb from '../Components/Breadcumb.vue';
 import AppLayout from '../AppLayout.vue';
 import ReviewSection from '../Components/ReviewSection.vue';
@@ -134,26 +134,49 @@ const selectedColor = ref('Coklat');
 const prop = defineProps({
     jdata: Object
 });
-const selectedImage = ref(prop.jdata.post.image);
+const selectedImage = ref(prop.jdata?.post?.image ?? null);
 
-const post = ref(prop.jdata.post);
+const post = ref(prop.jdata?.post ?? {});
+const toNumberOrNull = (value) => {
+    if (value === undefined || value === null || value === '') {
+        return null;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+};
+const featuredImages = computed(() => {
+    const meta = post.value?.meta ?? [];
+    const raw = parseMeta('featured_images', meta);
+    if (!raw) {
+        return [];
+    }
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
+    }
+});
 const product = computed(() => {
     const p = post.value;
-
+    const meta = p?.meta ?? [];
+    const priceValue = parseMeta('price', meta);
+    const ratingValue = parseMeta('rating', meta);
+    const oldPriceValue = parseMeta('old_price', meta);
     return {
 
         id: p.id,
         name: p.title,
         category: p.category,
-        price: 10000,
-        oldPrice: 100000,
-        rating: 5,
-        reviews: p.comment_count,
+        price: toNumberOrNull(priceValue),
+        oldPrice: toNumberOrNull(oldPriceValue),
+        rating: toNumberOrNull(ratingValue) ?? 0,
+        reviews: p.comment_count ?? 0,
         description: p.content,
         images: [
             p.image,
-            ...JSON.parse(parseMetas('featured_images', p.meta))
-        ],
+            ...featuredImages.value
+        ].filter(Boolean),
         created_at: p.created_at,
         updated_at: p.updated_at
 
