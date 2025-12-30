@@ -1,7 +1,7 @@
 <template>
-    <footer class="border-t border-slate-200 bg-white mt-16">
-        <div class="container mx-auto px-4 py-10">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <footer class="border-t border-slate-200 bg-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h3 class="text-xl font-semibold text-slate-900">{{ websiteName }}</h3>
                     <p class="text-sm text-slate-500">{{ slogan }}</p>

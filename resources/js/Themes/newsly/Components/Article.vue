@@ -3,19 +3,19 @@
         <div v-if="hasArticles" class="grid gap-6">
             <article v-for="article in paginatedArticles" :key="article.id"
                 class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
-                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-5">
                     <div class="h-full">
                         <img :src="imageUrl(article.image)" :alt="article.title" class="w-full h-full object-cover" />
                     </div>
-                    <div class="p-6 space-y-4">
-                        <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                            <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600">
+                    <div class="p-5 space-y-3">
+                        <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
                                 {{ parseCategory(article.labels) }}
                             </span>
                             <span>{{ dateFormatHuman(article.created_at) }}</span>
                         </div>
 
-                        <h2 class="text-2xl font-semibold text-slate-900">
+                        <h2 class="text-xl font-semibold text-slate-900">
                             <Link :href="routeUrl('post', article.slug)">{{ article.title }}</Link>
                         </h2>
 

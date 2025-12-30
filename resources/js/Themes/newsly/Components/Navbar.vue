@@ -3,22 +3,21 @@
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
-                        <span class="text-lg font-semibold">N</span>
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                        <span class="text-base font-semibold">N</span>
                     </div>
                     <div>
-                        <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Newsly</p>
-                        <h1 class="text-2xl font-bold text-slate-900">{{ websiteName }}</h1>
+                        <h1 class="text-xl font-semibold text-slate-900">{{ websiteName }}</h1>
                         <p class="text-sm text-slate-500">{{ slogan }}</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <button class="hidden md:inline-flex px-4 py-2 rounded-full bg-slate-900 text-white text-sm">
-                        Langganan
+                <div class="flex items-center gap-2 text-sm">
+                    <button class="hidden md:inline-flex px-4 py-2 rounded-full bg-slate-900 text-white">
+                        Subscribe
                     </button>
-                    <button class="inline-flex px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-600">
-                        Kontak
+                    <button class="inline-flex px-4 py-2 rounded-full border border-slate-200 text-slate-600">
+                        Contact
                     </button>
                 </div>
             </div>
@@ -27,7 +26,7 @@
 
     <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
         <div class="container mx-auto px-4">
-            <ul class="flex flex-wrap gap-6 py-4 text-sm font-medium">
+            <ul class="flex flex-wrap gap-5 py-3 text-sm font-medium">
                 <template v-for="menu in menus" :key="menu.id">
                     <li v-if="menu.is_parent" class="relative group">
                         <div class="cursor-pointer text-slate-700 hover:text-slate-900 flex items-center">

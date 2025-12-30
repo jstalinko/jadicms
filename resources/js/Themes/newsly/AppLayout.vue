@@ -3,7 +3,7 @@
     <div class="min-h-screen bg-slate-50 text-slate-900">
         <Navbar />
         <div class="container mx-auto px-4 py-10">
-            <div class="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-10">
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
                 <main class="space-y-8">
                     <HookRenderer place="content_before" />
                     <slot />

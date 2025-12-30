@@ -1,22 +1,22 @@
 <template>
     <AppLayout>
-        <section class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.35em] text-slate-400 mb-3">Newsly Highlight</p>
-                    <h2 class="text-3xl md:text-4xl font-semibold text-slate-900 mb-3">
-                        Cerita terbaru, insight, dan update pilihan.
+        <section class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="space-y-2">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Newsly</p>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-slate-900">
+                        Berita singkat dan modern untuk pembaca cepat.
                     </h2>
-                    <p class="text-slate-600 max-w-2xl">
-                        Temukan artikel menarik dari berbagai kategori, disajikan dalam tampilan editorial modern.
+                    <p class="text-slate-500 max-w-2xl">
+                        Kurasi artikel terbaru dalam tampilan yang bersih dan ringan.
                     </p>
                 </div>
-                <div class="flex flex-wrap gap-3">
-                    <button class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm">
-                        Langganan
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 rounded-full bg-slate-900 text-white text-sm">
+                        Subscribe
                     </button>
-                    <button class="px-5 py-2 rounded-full border border-slate-200 text-sm text-slate-600">
-                        Kirim Tulisan
+                    <button class="px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-600">
+                        Contact
                     </button>
                 </div>
             </div>

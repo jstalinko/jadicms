@@ -1,7 +1,7 @@
 <template>
     <!-- Comments Section -->
-    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm mb-8" v-if="show">
-        <h3 class="text-2xl font-semibold text-slate-900 mb-6 flex items-center">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-8" v-if="show">
+        <h3 class="text-xl font-semibold text-slate-900 mb-6 flex items-center">
             <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -27,7 +27,7 @@
         <!-- Comments List -->
         <div class="space-y-6">
             <div v-for="comment in displayedComments" :key="comment.id"
-                class="rounded-xl p-6 border border-slate-200 bg-slate-50">
+                class="rounded-xl p-5 border border-slate-200 bg-slate-50">
                 <div class="flex items-start space-x-4">
                     <div
                         class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-lg">

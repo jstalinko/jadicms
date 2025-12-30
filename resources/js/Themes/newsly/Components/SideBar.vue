@@ -1,6 +1,6 @@
 <template>
     <aside class="space-y-6">
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <h3 class="text-lg font-semibold mb-4 text-slate-900">Cari Artikel</h3>
             <div class="flex">
                 <input v-model="searchQuery" type="text" placeholder="Cari artikel..."
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <h3 class="text-lg font-semibold mb-4 text-slate-900">Kategori</h3>
             <ul class="space-y-2 text-sm">
                 <li v-for="category in categories" :key="category.id"
@@ -32,7 +32,7 @@
             </ul>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <h3 class="text-lg font-semibold mb-4 text-slate-900">Arsip</h3>
             <ul class="space-y-2 text-sm">
                 <li v-for="archive in archives" :key="archive.month"
@@ -47,7 +47,7 @@
             </ul>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <h3 class="text-lg font-semibold mb-4 text-slate-900">Terbaru</h3>
             <ul class="space-y-3 text-sm">
                 <li v-for="post in latestPosts" :key="post.id" class="border-b border-slate-100 pb-3 last:border-0">

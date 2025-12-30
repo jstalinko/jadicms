@@ -9,10 +9,10 @@
                 <span>{{ formatDate(post.created_at) }}</span>
             </div>
 
-            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <img :src="imageUrl(post.image)" :alt="post.title" class="w-full h-96 object-cover" />
-                <div class="p-8 lg:p-12 space-y-5">
-                    <h1 class="text-3xl md:text-4xl font-semibold text-slate-900">
+                <div class="p-6 md:p-8 space-y-4">
+                    <h1 class="text-2xl md:text-3xl font-semibold text-slate-900">
                         {{ post.title }}
                     </h1>
                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
