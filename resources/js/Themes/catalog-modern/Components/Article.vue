@@ -1,22 +1,40 @@
 <template>
-    <section class="py-12">
+    <section class="py-14">
         <div class="container mx-auto px-4">
-            <!-- Products Grid -->
-            <div v-if="hasItems" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.2em] text-amber-600">Produk Terbaru</p>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-gray-900">Pilihan Produk Modern</h2>
+                </div>
+                <div class="hidden md:flex items-center gap-3 text-sm text-gray-500">
+                    <span>Filter mudah, hasil cepat</span>
+                    <span class="w-10 h-px bg-gray-300"></span>
+                    <span>{{ articles.length }} item</span>
+                </div>
+            </div>
+
+            <div v-if="hasItems" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div v-for="product in paginatedProducts" :key="product.id"
-                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition group cursor-pointer"
+                    class="group border border-gray-200 rounded-2xl overflow-hidden bg-white hover:border-amber-500 hover:shadow-xl transition"
                     @click="router.visit(routeUrl('post', product.slug))">
-                    <div class="relative overflow-hidden">
+                    <div class="relative">
                         <img :src="imageUrl(product.image)" :alt="product.title"
-                            class="w-full h-64 object-cover group-hover:scale-110 transition duration-300" />
+                            class="w-full h-64 object-cover transition duration-300 group-hover:scale-105" />
+                        <span
+                            class="absolute top-4 left-4 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+                            {{ product.category?.name ?? 'Produk' }}
+                        </span>
                     </div>
 
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                            <Link :href="routeUrl('post', product.slug)">{{ product.title }}</Link>
-                        </h3>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                <Link :href="routeUrl('post', product.slug)">{{ product.title }}</Link>
+                            </h3>
+                            <p class="text-sm text-gray-500">Review {{ product.comment_count ?? 0 }}</p>
+                        </div>
 
-                        <div class="flex items-center mb-2">
+                        <div class="flex items-center gap-2 text-sm">
                             <div class="flex text-amber-500">
                                 <svg v-for="i in 5" :key="i" class="w-4 h-4"
                                     :class="i <= productRating(product) ? 'fill-current' : 'fill-gray-300'"
@@ -25,21 +43,20 @@
                                         d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                                 </svg>
                             </div>
-                            <span class="text-sm text-gray-600 ml-2">({{ product.comment_count ?? 0 }})</span>
+                            <span class="text-gray-600">{{ productRating(product) }}/5</span>
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <span class="text-xl font-bold text-amber-600" v-if="productPrice(product)">
+                            <span class="text-lg font-semibold text-gray-900" v-if="productPrice(product)">
                                 Rp {{ productPrice(product).toLocaleString('id-ID') }}
                             </span>
-                            <span v-else>
-                                Hubungi Kami
-                            </span>
+                            <span v-else class="text-sm text-gray-500">Harga sesuai permintaan</span>
                             <button @click="addToCart(product)"
-                                class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-700">
+                                <span>Tambah</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        d="M12 4v16m8-8H4" />
                                 </svg>
                             </button>
                         </div>
@@ -47,49 +64,40 @@
                 </div>
             </div>
 
-            <!-- Pagination -->
-            <div v-if="totalPages > 1" class="mt-12 flex items-center justify-center space-x-2">
-                <!-- Previous Button -->
+            <div v-else class="py-16 text-center text-gray-500">
+                Belum ada produk yang tersedia.
+            </div>
+
+            <div v-if="totalPages > 1" class="mt-12 flex items-center justify-center gap-2">
                 <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" :class="[
-                    'px-4 py-2 rounded-lg font-medium transition',
+                    'px-3 py-2 rounded-full text-sm transition',
                     currentPage === 1
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-amber-600 hover:text-white border border-gray-300'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-amber-100 border border-gray-200'
                 ]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    Prev
                 </button>
 
-                <!-- Page Numbers -->
                 <button v-for="page in visiblePages" :key="page" @click="goToPage(page)" :class="[
-                    'px-4 py-2 rounded-lg font-medium transition',
+                    'px-4 py-2 rounded-full text-sm transition',
                     currentPage === page
                         ? 'bg-amber-600 text-white'
-                        : 'bg-white text-gray-700 hover:bg-amber-100 border border-gray-300'
+                        : 'bg-white text-gray-700 hover:bg-amber-100 border border-gray-200'
                 ]">
                     {{ page }}
                 </button>
 
-                <!-- Next Button -->
                 <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" :class="[
-                    'px-4 py-2 rounded-lg font-medium transition',
+                    'px-3 py-2 rounded-full text-sm transition',
                     currentPage === totalPages
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-amber-600 hover:text-white border border-gray-300'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-amber-100 border border-gray-200'
                 ]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    Next
                 </button>
             </div>
 
-            <div v-else-if="!hasItems" class="py-16 text-center text-gray-500">
-                Belum ada produk yang tersedia.
-            </div>
-
-            <!-- Pagination Info -->
-            <div class="mt-4 text-center text-gray-600 text-sm">
+            <div class="mt-4 text-center text-gray-500 text-xs">
                 Menampilkan {{ startItem }} - {{ endItem }} dari {{ articles.length }} produk
             </div>
         </div>

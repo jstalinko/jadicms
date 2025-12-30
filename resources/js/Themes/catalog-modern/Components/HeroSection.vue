@@ -1,17 +1,31 @@
 <template>
-    <section class="bg-gradient-to-r from-amber-50 to-orange-50 py-16">
+    <section class="bg-gray-950 text-white py-20">
         <div class="container mx-auto px-4">
-            <div class="text-center">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-                    {{ headerText }}
-                </h2>
-                <p class="text-gray-600 text-lg mb-8">
-                    {{ subHeaderText }}
-                </p>
-                <button
-                    class="bg-amber-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
-                    Lihat Koleksi
-                </button>
+            <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-amber-300 mb-4">Catalog Modern</p>
+                    <h2 class="text-4xl md:text-5xl font-semibold leading-tight mb-5">
+                        {{ headerText }}
+                    </h2>
+                    <p class="text-gray-300 text-lg mb-8">
+                        {{ subHeaderText }}
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="bg-amber-500 text-gray-900 px-7 py-3 rounded-full font-semibold hover:bg-amber-400 transition">
+                            Lihat Koleksi
+                        </button>
+                        <button
+                            class="border border-white/40 px-7 py-3 rounded-full font-semibold hover:bg-white/10 transition">
+                            Konsultasi Gratis
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -top-8 -left-8 w-28 h-28 bg-amber-500/30 rounded-full blur-2xl"></div>
+                    <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80"
+                        alt="Furniture Modern" class="rounded-3xl shadow-2xl border border-white/10" />
+                </div>
             </div>
         </div>
     </section>
@@ -53,6 +67,6 @@ onMounted(() => {
     setInterval(() => {
         headerText.value = headerTextList[Math.floor(Math.random() * headerTextList.length)];
         subHeaderText.value = subHeaderTextList[Math.floor(Math.random() * subHeaderTextList.length)];
-    }, 3000);
+    }, 5000);
 });
 </script>

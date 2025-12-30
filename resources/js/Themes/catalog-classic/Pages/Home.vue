@@ -3,22 +3,34 @@
 
         <HeroSection />
         <AboutSection />
-        <section class="py-8 bg-white">
+        <section class="py-8 bg-amber-50">
             <div class="container mx-auto px-4">
-                <div class="flex overflow-x-auto space-x-4 pb-4">
-                    <button @click="selectedCategory = 'all'"
-                        :class="[
-                            'px-6 py-2 rounded-full font-medium whitespace-nowrap transition',
-                            selectedCategory === 'all' ? 'bg-amber-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">Semua</button>
-                    <button v-for="category in categories" :key="category.id" @click="selectedCategory = category.slug"
-                        :class="[
-                            'px-6 py-2 rounded-full font-medium whitespace-nowrap transition',
-                            selectedCategory === category.slug
-                                ? 'bg-amber-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        ]">
-                        {{ category.name }}
-                    </button>
+                <div class="bg-white border border-amber-100 rounded-2xl p-5 shadow-sm">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Jelajahi Kategori</h3>
+                            <p class="text-sm text-gray-500">Gunakan filter klasik untuk mempermudah pencarian.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button @click="selectedCategory = 'all'" :class="[
+                                'px-4 py-2 rounded-lg text-sm font-medium transition',
+                                selectedCategory === 'all'
+                                    ? 'bg-amber-700 text-white'
+                                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                            ]">
+                                Semua
+                            </button>
+                            <button v-for="category in categories" :key="category.id" @click="selectedCategory = category.slug"
+                                :class="[
+                                    'px-4 py-2 rounded-lg text-sm font-medium transition',
+                                    selectedCategory === category.slug
+                                        ? 'bg-amber-700 text-white'
+                                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                ]">
+                                {{ category.name }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

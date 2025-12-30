@@ -2,111 +2,80 @@
     <AppLayout>
         <Breadcumb :product="product" />
 
-        <!-- Product Detail Section -->
-        <section class="py-12">
+        <section class="py-14 bg-gray-50">
             <div class="container mx-auto px-4">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <!-- Product Images -->
-                    <div>
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
+                <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
                             <img :src="imageUrl(selectedImage)" :alt="product.name"
-                                class="w-full h-96 lg:h-[500px] object-cover" />
+                                class="w-full h-96 lg:h-[520px] object-cover" />
                         </div>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div v-for="(image, index) in product.images" :key="index" @click="selectedImage = image"
-                                :class="[
-                                    'bg-white rounded-lg overflow-hidden cursor-pointer border-2 transition',
-                                    selectedImage === image ? 'border-amber-600' : 'border-gray-200 hover:border-amber-400'
+                        <div class="grid grid-cols-4 gap-3">
+                            <button v-for="(image, index) in product.images" :key="index"
+                                @click="selectedImage = image" :class="[
+                                    'rounded-xl overflow-hidden border-2 transition focus:outline-none',
+                                    selectedImage === image ? 'border-amber-500' : 'border-transparent hover:border-amber-300'
                                 ]">
                                 <img :src="imageUrl(image)" :alt="`${product.name} ${index + 1}`"
-                                    class="w-full h-24 object-cover" />
-                            </div>
+                                    class="w-full h-20 object-cover" />
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Product Info -->
-                    <div>
-                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
-                            {{ product.name }}
-                        </h1>
-
-                        <div class="flex items-center mb-4">
-                            <div class="flex text-amber-500 mr-2">
-                                <svg v-for="i in 5" :key="i" class="w-5 h-5"
-                                    :class="i <= product.rating ? 'fill-current' : 'fill-gray-300'" viewBox="0 0 20 20">
-                                    <path
-                                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                </svg>
-                            </div>
-                            <span class="text-gray-600">{{ product.rating }} / 5</span>
-                            <span class="text-gray-400 mx-2">|</span>
-                            <span class="text-gray-600">{{ product.reviews }} reviews</span>
+                    <div class="bg-white rounded-3xl p-8 shadow-lg space-y-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.25em] text-amber-600 mb-2">Produk pilihan</p>
+                            <h1 class="text-3xl lg:text-4xl font-semibold text-gray-900">
+                                {{ product.name }}
+                            </h1>
                         </div>
 
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold text-amber-600">
+                        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                            <span class="flex items-center gap-2">
+                                <span class="text-amber-500 font-semibold">{{ product.rating }}/5</span>
+                                <span>Rating</span>
+                            </span>
+                            <span class="w-px h-4 bg-gray-200"></span>
+                            <span>{{ product.reviews }} ulasan</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl font-semibold text-gray-900">
                                 Rp {{ product.price?.toLocaleString('id-ID') }}
                             </span>
-                            <span v-if="product.oldPrice" class="text-xl text-gray-400 line-through ml-3">
+                            <span v-if="product.oldPrice" class="text-lg text-gray-400 line-through">
                                 Rp {{ product.oldPrice?.toLocaleString('id-ID') }}
                             </span>
                         </div>
 
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Deskripsi</h3>
+                        <div class="border-t border-gray-100 pt-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-3">Deskripsi Produk</h3>
                             <div class="text-gray-600 leading-relaxed">
-                                <div v-html="product.description" class="prose md:prose-xl"></div>
+                                <div v-html="product.description" class="prose max-w-none"></div>
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-500">
+                            <div class="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-3">
+                                <span>Stok</span>
+                                <span class="text-gray-900 font-semibold">Tersedia</span>
+                            </div>
+                            <div class="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-3">
+                                <span>Pengiriman</span>
+                                <span class="text-gray-900 font-semibold">2-4 Hari</span>
+                            </div>
+                        </div>
 
-
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-4">
+                        <div class="flex flex-col sm:flex-row gap-3">
                             <button @click="addToCart"
-                                class="flex-1 bg-amber-600 text-white py-4 rounded-lg font-semibold hover:bg-amber-700 transition flex items-center justify-center space-x-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                                <span>Tambah ke Keranjang</span>
+                                class="flex-1 bg-gray-900 text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition">
+                                Tambah ke Keranjang
                             </button>
                             <button
-                                class="bg-white border-2 border-amber-600 text-amber-600 py-4 px-6 rounded-lg font-semibold hover:bg-amber-50 transition">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
+                                class="flex-1 border border-amber-500 text-amber-600 py-3 rounded-full font-semibold hover:bg-amber-50 transition">
+                                Simpan Favorit
                             </button>
                         </div>
-
-                        <!-- Additional Info -->
-                        <!-- <div class="mt-8 grid grid-cols-3 gap-4">
-                            <div class="text-center p-4 bg-white rounded-lg shadow">
-                                <svg class="w-8 h-8 mx-auto mb-2 text-amber-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                                </svg>
-                                <p class="text-sm text-gray-600"></p>
-                            </div>
-                            <div class="text-center p-4 bg-white rounded-lg shadow">
-                                <svg class="w-8 h-8 mx-auto mb-2 text-amber-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                                <p class="text-sm text-gray-600">Garansi 1 Tahun</p>
-                            </div>
-                            <div class="text-center p-4 bg-white rounded-lg shadow">
-                                <svg class="w-8 h-8 mx-auto mb-2 text-amber-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                </svg>
-                                <p class="text-sm text-gray-600">Pembayaran Aman</p>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>
