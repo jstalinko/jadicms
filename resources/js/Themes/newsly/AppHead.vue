@@ -19,13 +19,14 @@
         <meta name="twitter:title" :content="meta?.title ?? defaultTitle" />
         <meta name="twitter:description" :content="meta?.description" />
         <meta name="twitter:image" :content="meta?.image ?? defaultImage" />
-
     </Head>
+    <HookRenderer place="header" />
+
 </template>
 <script setup>
 import { usePage, Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
-
+import HookRenderer from './Components/HookRenderer.vue';
 const $page = usePage();
 const meta = computed(() => $page.props.j_inertia_meta ?? {});
 const setting = computed(() => $page.props.setting ?? {});
@@ -40,4 +41,5 @@ const defaultImage = computed(() => {
     }
     return `${setting.value.base_url}/storage${setting.value.icon}`;
 });
+
 </script>

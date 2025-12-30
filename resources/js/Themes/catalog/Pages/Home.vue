@@ -32,7 +32,6 @@
 import { ref, computed } from 'vue';
 import AppLayout from '../AppLayout.vue';
 import HeroSection from '../Components/HeroSection.vue';
-import Footer from '../Components/Footer.vue';
 import Article from '../Components/Article.vue';
 import AboutSection from '../Components/AboutSection.vue';
 import Testimonial from '../Components/Testimonial.vue';
@@ -40,11 +39,11 @@ import { usePage } from '@inertiajs/vue3';
 const prop = defineProps({ jdata: Object });
 const $page = usePage();
 const selectedCategory = ref('all');
-const categories = ref($page.props.sharedData.categories);
-const productRaw = ref(prop.jdata.posts);
+const categories = ref($page.props.sharedData?.categories ?? []);
+const productRaw = ref(prop.jdata?.posts ?? []);
 const products = computed(() => {
-    return productRaw.value.filter(product => product.type === 'product');
-})
+    return (productRaw.value ?? []).filter(product => product.type === 'product');
+});
 const filteredProducts = computed(() => {
     if (selectedCategory.value === 'all') {
         return products.value;

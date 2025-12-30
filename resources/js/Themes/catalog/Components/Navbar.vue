@@ -6,7 +6,7 @@
                     <div class="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-xl">F</span>
                     </div>
-                    <h1 class="text-2xl font-bold text-gray-800">{{ setting.site_name }}</h1>
+                    <h1 class="text-2xl font-bold text-gray-800">{{ siteName }}</h1>
                 </div>
 
                 <nav class="hidden md:flex space-x-8">
@@ -23,9 +23,10 @@
 
 <script setup>
 import { usePage, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
-const $page = usePage();
-const setting = ref($page.props.setting);
-const menus = ref($page.props.setting.menus);
+import { computed } from 'vue';
 
+const $page = usePage();
+const setting = computed(() => $page.props.setting ?? {});
+const menus = computed(() => setting.value.menus ?? []);
+const siteName = computed(() => setting.value.site_name ?? 'JadiCMS');
 </script>
